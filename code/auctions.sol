@@ -297,7 +297,7 @@ contract ForgeMining{
             {
                 secondsPerDay == 10;
             }
-            if(secondsPerDay > 60 * 60 * 24 * 10)
+            if(secondsPerDay > 60 * 60 * 24 * 14)
             {
                 secondsPerDay = 60 * 24 * 60 * 3;
             }
