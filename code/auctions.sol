@@ -297,9 +297,9 @@ contract ForgeMining{
             {
                 secondsPerDay == 10;
             }
-            if(secondsPerDay > 60 * 60 * 24 * 14)
+            if(secondsPerDay > 60 * 60 * 24 * 10)
             {
-                secondsPerDay = 60 * 24 * 60 * 14;
+                secondsPerDay = 60 * 24 * 60 * 3;
             }
 
         lastepoch = epoch;
