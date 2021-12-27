@@ -201,7 +201,7 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     uint previousBlockTime = block.timestamp;
     uint oneEthUnit =    1000000000000000000;
     uint one8unit   =              100000000;
-    uint public Token2Per=         100000000;
+    uint public Token2Per=           3000000;
     uint Token2Min=                       10;
     mapping(bytes32 => bytes32) public solutionForChallenge;
     mapping(bytes32 => uint) public EpochForChallenge;
@@ -292,13 +292,6 @@ function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public
 
             //the digest must be smaller than the target
             require(uint256(digest) < miningTarget, "Digest must be smaller than miningTarget");
-                
-	        bytes32 solution = solutionForChallenge[challengeNumber];
-            require(solution == 0x0,"This Challenge was alreday mined by someone else");  //prevent the same answer from awarding twice
-	    
-            //set blockchain data
-
-	        solutionForChallenge[challengeNumber] = digest;
 		    _startNewMiningEpoch();
 
         	uint diff = block.timestamp - previousBlockTime;
