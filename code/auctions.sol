@@ -1,86 +1,36 @@
-// Forge - Proof of Work Mining Contract
-// Distrubtion of Forge Token is as follows:
-// 25% of Forge Token is Auctioned in the ForgeAuctions Contract which distributes tokens to users who use 0xBitcoin to buy tokens in fair price. Each auction lasts ~3 days. Using the Auctions contract
-// +
-// 25% of Forge Token is distributed as Liquidiy Pool rewards in the ForgeRewards Contract which distributes tokens to users who deposit the SpiritSwap Liquidity Pool tokens into the LPRewards contract.
-// +
-// 50% of Forge Token is distributed using ForgeMining Contract(this Contract) which distributes tokens to users by using GPUs/FPGAs to solve a complicated problem to gain tokens!  Uses this contract
-//
-// = 100% Of the Token is distributed to the users! No dev fee or premine!
-//
-// All distributions happen fairly using Bitcoins model of distribution for over 100+ years, on-chain, decentralized, trustless, ownerless contracts!
-//
-// Network: Polygon Chain 
-// ChainID = 89
-//
-//
-// Name: Forge
-// Symbol: Frg
-// Decimals: 18 
-//
-// Total supply: 42,000,001.000000000000000000
-//   =
-// 21,000,000 Mined over 100+ years using Bitcoins Distrubtion halvings every 4 years. Uses Proof-oF-Work to distribute the tokens. Public Miner is available.  Uses this contract.
-//   +
-// 10,500,000 Auctioned over 100+ years into 4 day auctions split fairly among all buyers. ALL 0xBitcoin proceeds go into THIS contract which it fairly distributes to miners.  Uses the ForgeAuctions contract
-//   +
-// 10,500,000 tokens goes to Liquidity Providers of the token over 100+ year using Bitcoins distribution!  Helps prevent LP losses!  Uses the ForgeRewards Contract
-//
-//  =
-//
-// 42,000,001 Tokens is the max Supply
-//      
-// 50% of the 0xBitcoin Token from this contract goes to the Miner to pay for the transaction cost and if the token grows enough earn 0xBitcoin per mint!!
-// 50% of the 0xBitcoin TOken from this contract goes to the Liquidity Providers via ForgeRewards Contract.  Helps prevent Impermant Loss! Larger Liquidity!
-//
-// No premine, dev cut, or advantage taken at launch. Public miner available at launch.  100% of the token is given away fairly over 100+ years using Bitcoins model!
-//
-// Send this contract any ERC20 token and it will become instantly mineable and able to distribute using proof-of-work for 1 year!!!!
-//
-//Viva la Mineables!!! Send this contract any ERC20 complient token (Wrapped NFTs incoming!) and we will fairly to miners and Holders(
-//  Each Mint prints (1/10000) of any ERC20.
-//pThirdDifficulty allows for the difficulty to be cut in a third.  So difficulty 10,000 becomes 3,333.  Costs 333 Fantom  Makes mining 3x easier
-//* 1 tokens in LP are burned to create the LP pool.
-//
-// Credits: 0xBitcoin, Vether, Synethix
+//  Forge Auctions Contract
+//   Auctions 8,192 tokens every 3 days and users are able to withdraw anytime after!
+
+//   Proceeds of auctions go back into the miners pockets, by going directly to the Proof of Work Contract!
+
+// 10,500,000 tokens are Auctioned off over 100 years in this contract! In the first era ~5,000,000 are auctioned and half every era after!
+
+//   Distributes 8,192 tokens every 3 days for the first era(5 years) and halves every era after
+
+// By using the burn0xBTCForMember function
+//       0xBitcoin Token is taken from the user and used to recieve your share of the 8,192 tokens auctioned every 3 days which varies with Forge epoch speeds!  
 
 
 pragma solidity ^0.8.0;
 
-contract Ownable {
-    address public owner;
-
+contract Ownabled {
+    address public owner22;
     event TransferOwnership(address _from, address _to);
 
     constructor() public {
-        owner = msg.sender;
+        owner22 = msg.sender;
         emit TransferOwnership(address(0), msg.sender);
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "only owner");
+    modifier onlyOwner22() {
+        require(msg.sender == owner22, "only owner");
         _;
     }
-
-    function setOwner(address _owner) internal onlyOwner {
-        emit TransferOwnership(owner, _owner);
-        owner = _owner;
+    function setOwner(address _owner22) internal onlyOwner22 {
+        emit TransferOwnership(owner22, _owner22);
+        owner22 = _owner22;
     }
 }
-
-
-
-
-library IsContract {
-    function isContract(address _addr) internal view returns (bool) {
-        bytes32 codehash;
-        /* solium-disable-next-line */
-        assembly { codehash := extcodehash(_addr) }
-        return codehash != bytes32(0) && codehash != bytes32(0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470);
-    }
-}
-
-// File: contracts/utils/SafeMath.sol
 
 library SafeMath {
     function add(uint256 x, uint256 y) internal pure returns (uint256) {
@@ -120,8 +70,6 @@ library SafeMath {
     }
 }
 
-// File: contracts/utils/Math.sol
-
 library ExtendedMath {
 
 
@@ -134,579 +82,535 @@ library ExtendedMath {
 
     }
 }
-
-// File: contracts/interfaces/IERC20.sol
-
 interface IERC20 {
-	function totalSupply() external view returns (uint256);
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
-    function transfer(address _to, uint _value) external returns (bool success);
-    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);
-    function allowance(address _owner, address _spender) external view returns (uint256 remaining);
-    function approve(address _spender, uint256 _value) external returns (bool success);
-    function balanceOf(address _owner) external view returns (uint256 balance);
+
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
+     */
+    function balanceOf(address account) external view returns (uint256);
+
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address recipient, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through {transferFrom}. This is
+     * zero by default.
+     *
+     * This value changes when {approve} or {transferFrom} are called.
+     */
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Moves `amount` tokens from `sender` to `recipient` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
+     */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+   
     
 }
 
+contract GasPump {
+    bytes32 private stub;
 
-// File: contracts/commons/AddressMinHeap.sol
-
-
-
-abstract contract ApproveAndCallFallBack {
-    function receiveApproval(address from, uint256 tokens, address token, bytes memory data) virtual public;
+    modifier requestGas(uint256 _factor) {
+        if (tx.gasprice == 0 || gasleft() > block.gaslimit) {
+            uint256 startgas = gasleft();
+            _;
+            uint256 delta = startgas - gasleft();
+            uint256 target = (delta * _factor) / 100;
+            startgas = gasleft();
+            while (startgas - gasleft() < target) {
+                // Burn gas
+                stub = keccak256(abi.encodePacked(stub));
+            }
+        } else {
+            _;
+        }
+    }
 }
 
+contract ForgeMining{
+    function getEpoch() public view returns (uint) {}
+    }
 
-//Main contract
+  contract ForgeAuctions is  GasPump, Ownabled
+{
 
-contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
-	uint constant public targetTime = 36 * 60; //= 36 minutes
-
-// SUPPORTING CONTRACTS
-    address public AddressAuction;
-    address public AddressLPReward;
-    address public AddressZeroXBTC;
-//Events
-    using SafeMath for uint256;
+    using SafeMath for uint;
     using ExtendedMath for uint;
-    event Mint(address indexed from, uint reward_amount, uint epochCount, bytes32 newChallengeNumber);
-    event MegaMint(address indexed from, uint reward_amount, uint epochCount, bytes32 newChallengeNumber, uint NumberOfTokensMinted);
+    address public AddressZeroXBTC;
+    address public AddressForgeToken;
+    // ERC-20 Parameters
+    uint256 public extraGas;
+    bool runonce = false;
+    uint256 oneEthUnit = 1000000000000000000; 
+    uint256 one0xBTCUnit =         100000000;
+    string public name;
+    uint public decimals;
 
-// Managment events
-    uint256 override public totalSupply = 42000001000000000000000000;
-    bytes32 private constant BALANCE_KEY = keccak256("balance");
+    // ERC-20 Mappings
+    mapping(address => uint) private _balances;
+    mapping(address => mapping(address => uint)) private _allowances;
 
-    //BITCOIN INITALIZE Start
-	
-    uint _totalSupply = 21000000000000000000000000;
-    uint public latestDifficultyPeriodStarted2 = block.timestamp;
-    uint public epochCount = 0;//number of 'blocks' mined
-
-    uint public _BLOCKS_PER_READJUSTMENT = 256;
-
-    //a little number
-    uint public  _MINIMUM_TARGET = 2**16;
+    // Public Parameters
+    uint coin; uint public emission;
+    uint public currentEra; uint public currentDay;
+    uint public daysPerEra; uint public secondsPerDay;
+    uint public nextDayTime;
+    uint public totalBurnt; uint public totalEmitted;
+    // Public Mappings
     
-    uint public  _MAXIMUM_TARGET = 2**234;
-    uint public miningTarget = _MAXIMUM_TARGET.div(200000000000*25);  //1000 million difficulty to start until i enable mining
+    mapping(uint=>uint) public mapEra_Emission;                                             // Era->Emission
+    mapping(uint=>mapping(uint=>uint)) public mapEraDay_MemberCount;                        // Era,Days->MemberCount
+    mapping(uint=>mapping(uint=>address[])) public mapEraDay_Members;                       // Era,Days->Members
+    mapping(uint=>mapping(uint=>uint)) public mapEraDay_Units;                              // Era,Days->Units
+    mapping(uint=>mapping(uint=>uint)) public mapEraDay_UnitsRemaining;                     // Era,Days->TotalUnits
+    mapping(uint=>mapping(uint=>uint)) public mapEraDay_EmissionRemaining;                  // Era,Days->Emission
+    mapping(uint=>mapping(uint=>mapping(address=>uint))) public mapEraDay_MemberUnits;      // Era,Days,Member->Units
+    mapping(address=>mapping(uint=>uint[])) public mapMemberEra_Days;                       // Member,Era->Days[]   
+    mapping(address=>uint) public ZmapMember_EraClaimedTo;      // Era,Days,Member->Units
+    mapping(address=>uint) public ZmapMember_DayClaimedTo; 
     
-    bytes32 public challengeNumber;   //generate a new one when a new reward is minted
-    uint public rewardEra = 0;
-    uint public maxSupplyForEra = (_totalSupply - _totalSupply.div( 2**(rewardEra + 1)));
-    uint public reward_amount = (150 * 10**uint(decimals) ).div( 2**rewardEra );
-    //Stuff for Functions
-    uint oldecount = 0;
-    uint previousBlockTime = block.timestamp;
-    uint oneEthUnit =    1000000000000000000;
-    uint one8unit   =              100000000;
-    uint public Token2Per=           3000000;
-    uint Token2Min=                       10;
-    mapping(bytes32 => bytes32) public solutionForChallenge;
-    mapping(bytes32 => uint) public EpochForChallenge;
-    mapping(uint => bytes32) public ChallengeForEpoch;
-    uint public tokensMinted;
-    mapping(address => uint) balances;
-    mapping(address => mapping(address => uint)) allowed;
-    //mapping(address => uint) Token_balances;
-    uint give0xBTC = 0;
-    uint give = 1;
-    // metadata
-    string public name = "Forge";
-    string public constant symbol = "Fge";
-    uint8 public constant decimals = 18;
-    uint public totalLifetimes = 0;
+    ForgeMining ForgeMiningToken;
+    // Events
+        event SetExtraGas(uint256 _prev, uint256 _new);
+    event NewEra(uint era, uint emission, uint totalBurnt);
+    event NewDay(uint era, uint day, uint time, uint previousDayTotal, uint previousDayMembers);
+    event Burn(address indexed payer, address indexed member, uint era, uint day, uint units, uint dailyTotal);
+    event BurnMultipleDays(address indexed payer, address indexed member, uint era, uint NumberOfDays, uint totalUnits);
+    //event transferFrom2(address a, address _member, uint value);
+    event Withdrawal(address indexed caller, address indexed member, uint era, uint day, uint value, uint vetherRemaining);
+    //ProofofWorkStuff
+    
+    event MegaWithdrawal(address indexed caller, address indexed member, uint era, uint TotalDays, uint256 stricttotal);
+    uint256 starttime = 0;
+    uint256 public lastepoch = 0;
+    uint256 public blocktime = 36 * 60; //36 min blocks in ProofOfWork
+    //=====================================CREATION=========================================//
+
+    //testing//
+
+    // Constructor
+    constructor () public {
+        name = "Auction Contract"; decimals = 18; 
+        coin = 10**decimals; emission = 2048*coin;
+        currentEra = 1; currentDay = 1; 
+        daysPerEra = 600; secondsPerDay = 5;//60*60*24*3; 
+        totalBurnt = 0;
+        totalEmitted = 0;
+        nextDayTime = block.timestamp + secondsPerDay;
+        mapEra_Emission[currentEra] = emission; 
+        mapEraDay_EmissionRemaining[currentEra][currentDay] = emission; 
+                                                              
+    }
+    
+    
+    
+    // ERC20 Transfer function
+    // ERC20 Approve function
 
 
-    bool inited = false;
-    function zinit(address AuctionAddress2, address LPGuild2, address _ZeroXBTCAddress) public onlyOwner{
-        uint x = 21000000000000000000000000 / (2* (2 ** totalLifetimes)); //half supply for LP Mine and Burn
-        // Only init once
-        assert(!inited);
-        inited = true;
-	
-    	rewardEra = 0;
-	tokensMinted = 0;
-    	//bitcoin commands short and sweet //sets to previous difficulty
-    	miningTarget = _MAXIMUM_TARGET.div(1001); //5000000 = 31gh/s @ 7 min for FPGA mining, 2000000 if GPU only
-        //latestDifficultyPeriodStarted2 = block.timestamp;
-    	
-    	_startNewMiningEpoch();
-    	
-    	
-        // Init contract variables and mint
-        balances[AuctionAddress2] = x;
-        emit Transfer(address(0), AuctionAddress2, x);
-    	AddressAuction = AuctionAddress2;
-	
-        AddressLPReward = payable(LPGuild2);
+        function zSetUP1(address token, address _ZeroXBTCAddress) public onlyOwner22 {
+        AddressForgeToken = token;
+        owner22 = address(0);
+        lastepoch =  0;
         AddressZeroXBTC = _ZeroXBTCAddress;
-        oldecount = epochCount;
-        // mint 1 token to setup LPs
-        balances[msg.sender] = 100000000;
-        emit Transfer(address(0), msg.sender, 100000000);
-        
-        
-        
+        ForgeMiningToken = ForgeMining(token);
+        lastepoch = ForgeMiningToken.getEpoch();
+        starttime = block.timestamp;
+
     }
 
-    ///
-    // Managment
-    ///
-    // first
-    
-    
-function ARewardSender() public {
-    //runs every _BLOCKS_PER_READJUSTMENT / 4
-    uint256 epochsPast = epochCount - oldecount; //actually epoch
-    reward_amount = (150 * 10**uint(decimals)).div( 2**rewardEra );
 
-    if(IERC20(AddressZeroXBTC).balanceOf(address(this)) > (6 * (Token2Per * _BLOCKS_PER_READJUSTMENT)/4)) // at least enough blocks to rerun this function for both LPRewards and Users
-    {
-        give0xBTC = 1 * give;
-        IERC20(AddressZeroXBTC).transfer(AddressLPReward, ((epochsPast) * Token2Per * give0xBTC));
-    }
-    else{
-        give0xBTC = 0;
-    }
-    oldecount = epochCount; //actually epoch
-}
+    function changeAuctionTime() internal {
+        uint256 epoch = ForgeMiningToken.getEpoch();
 
 
-//Mints to the payee Forge, 0xBitcoin always to the sender. Making it the heaviest currency in here.
-//
-//function mint(bool nonce, bool challenge_digest) public returns (bool success) {
-function mint(uint256 nonce, bytes32 challenge_digest) public returns (bool success) {
-    mintTo(nonce, challenge_digest, msg.sender);
-}
+             uint epochsMined = (epoch - lastepoch); 
+            if(epochsMined != 0)
+            {
+             uint targetTime = 36*60; //36 min per block 60 sec * 12
+             uint ethBlocksSinceLastDifficultyPeriod2 = epochsMined * targetTime;
 
-//function mintTo(bool nonce, bool challenge_digest,  address mintTo) public returns (bool success) {
-function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public returns (bool success) {
+            if( ethBlocksSinceLastDifficultyPeriod2 < secondsPerDay )
+            {
+                uint excess_block_pct = (secondsPerDay.mult(100)).div( ethBlocksSinceLastDifficultyPeriod2 );
 
-    		tokensMinted.add(reward_amount);
-            bytes32 digest =  keccak256(abi.encodePacked(challengeNumber, msg.sender, nonce));
-
-            //the challenge digest must match the expected
-            require(digest == challenge_digest, "Old challenge_digest or wrong challenge_digest");
-
-            //the digest must be smaller than the target
-            require(uint256(digest) < miningTarget, "Digest must be smaller than miningTarget");
-		    _startNewMiningEpoch();
-
-        	uint diff = block.timestamp - previousBlockTime;
-	    	uint x = 4;
-	    	if(diff  > targetTime)
-	    	{
-	    		for(x = 4; x< 10; x++){
-	    		if(diff <= (targetTime * x).div(3)){
-	    		 	break;
-	    		}}
-	    	}
-            uint reward = (x * reward_amount).div(4);
-	
-	    	balances[mintTo] = balances[mintTo].add(reward);
-	        balances[AddressLPReward] = balances[AddressLPReward].add((reward).div(2));
-
-
-	    	tokensMinted = tokensMinted.add(reward);
-            previousBlockTime = block.timestamp;
-            if(give0xBTC > 0){
-            IERC20(AddressZeroXBTC).transfer(msg.sender, Token2Per*give0xBTC);
-           }
-           emit Mint(msg.sender, reward_amount, epochCount, challengeNumber );
-           return true;
-}
-
-//First address for mintSend(Forge + 0xBitcoin), Second address+ for other tokens
-// REPALCE WITH LINE BELOW in production
-//function mintTokensArrayTo(bool nonce, bool challenge_digest, address[] memory ExtraFunds, address[] memory MintTo) public returns (bool success) {
-function mintTokensArrayTo(uint256 nonce, bytes32 challenge_digest, address[] memory ExtraFunds, address[] memory MintTo) public returns (bool success) {
-		uint xx = 4;
-        uint diff = block.timestamp - previousBlockTime;
-		if(diff  > targetTime)
-		{
-			for(xx = 4; xx< 10; xx++){
-			if(diff <= (targetTime * xx).div(3)){
-			 	break;
-			}
-            }
-		}
-        require(MintTo.length == ExtraFunds.length + 1,"So MintTo has to have same number of addressses as ExtraFunds");
-       for(uint x=0; x< ExtraFunds.length; x++)
-        {
-        require(ExtraFunds[x] != address(this) && ExtraFunds[x] != AddressZeroXBTC, "No base printing of tokens");
-        
-            for(uint y=1; y< ExtraFunds.length; y++){
-                require(ExtraFunds[y] != ExtraFunds[x] || x == y, "No printing The same tokens");
-            }
-
-    	}
-	
-    require(mintTo(nonce,challenge_digest, MintTo[0]), "mint issue");
-
-    
-    uint savex=0;
-    for(uint x=0; x<ExtraFunds.length; x++)
-    {
-        //exponentialy more valueable
-if(epochCount % (2**(x+1)) == 0){
-    uint256 TotalOwned = IERC20(ExtraFunds[x]).balanceOf(address(this));
-    if(TotalOwned != 0)
-    {
-        uint256 totalOwed = 0;
-        if( x % 3 == 0 && x != 0){
-            totalOwed = (TotalOwned*xx).divRound(4*10000);
-        }
-        else{
-            totalOwed = (TotalOwned*xx).div(4*10000);  //10000 was chosen to give each token a ~a year per token of distribution using Proof-of-Work
-        }
-            IERC20(ExtraFunds[x]).transfer(MintTo[x], totalOwed);
-        
-    }
-    savex = x;
-    }
-				
-        
-    }
-    
-    emit MegaMint(msg.sender, reward_amount, epochCount, challengeNumber, savex );
-    return true;
-}
-    
-
-
-function mintTokensSameAddress(uint256 nonce, bytes32 challenge_digest, address[] memory ExtraFunds, address MintTo) public returns (bool success) {
-        address[] memory dd = new address[](ExtraFunds.length + 1); 
-        uint y=0;
-        for(uint x=0; x< (ExtraFunds.length + 1); x++)
-        {
-            dd[x] = MintTo;
-        }
-        mintTokensArrayTo(nonce, challenge_digest, ExtraFunds, dd);
-        return true;
-}
-
-
-
-function _startNewMiningEpoch() internal {
-        
- 
-      //if max supply for the era will be exceeded next reward round then enter the new era before that happens
-
-      //40 is the final reward era, almost all tokens minted
-      //once the final era is reached, more tokens will not be given out because the assert function
-      if( tokensMinted.add((reward_amount)) > maxSupplyForEra && rewardEra < 39)
-      {
-        rewardEra = rewardEra + 1;
-        miningTarget = miningTarget.div(2 ** rewardEra);
-        
-      }
-
-      //set the next minted supply at which the era will change
-      // total supply of MINED tokens is 21000000000000000000000000  because of 16 decimal places
-
-      epochCount = epochCount.add(1);
-
-      //every so often, readjust difficulty. Dont readjust when deploying
-    if((epochCount) % (_BLOCKS_PER_READJUSTMENT / 4) == 0)
-    {
-        	ARewardSender();
-		maxSupplyForEra = _totalSupply - _totalSupply.div( 2**(rewardEra + 1));
-
-    if((epochCount % _BLOCKS_PER_READJUSTMENT== 0))
-    {
-         if(( IERC20(AddressZeroXBTC).balanceOf(address(this)) / Token2Per) <= 10000)
-         {
-             if(Token2Per.div(2) > Token2Min)
-             {
-             Token2Per = Token2Per.div(2);
-            }
-         }
-         else
-         {
-             Token2Per = Token2Per.mult(3);
-         }
-         
-        _reAdjustDifficulty();
-    }
-    }
-
-    challengeNumber = blockhash(block.number - 1);
-}
-
-
-
-
-    //https://en.bitcoin.it/wiki/Difficulty#What_is_the_formula_for_difficulty.3F
-    //as of 2017 the bitcoin difficulty was up to 17 zeroes, it was only 8 in the early days
-
-    function _reAdjustDifficulty() internal {
-
-        uint256 blktimestamp = block.timestamp;
-        uint ethBlocksSinceLastDifficultyPeriod2 = blktimestamp - latestDifficultyPeriodStarted2;
-
-        uint epochsMined = _BLOCKS_PER_READJUSTMENT; //256
-
-        uint adjusDiffTargetTime = targetTime * epochsMined; //36 min per block 60 sec * 12
-
-        //if there were less eth blocks passed in time than expected
-        if( ethBlocksSinceLastDifficultyPeriod2 < adjusDiffTargetTime )
-        {
-          uint excess_block_pct = (adjusDiffTargetTime.mult(100)).div( ethBlocksSinceLastDifficultyPeriod2 );
-	give = 1;
-          uint excess_block_pct_extra = excess_block_pct.sub(100).limitLessThan(1000);
+                 uint excess_block_pct_extra = excess_block_pct.sub(100).limitLessThan(1000);
           // If there were 5% more blocks mined than expected then this is 5.  If there were 100% more blocks mined than expected then this is 100.
 
-          //make it harder q
-          miningTarget = miningTarget.sub(miningTarget.div(2000).mult(excess_block_pct_extra));   //by up to 50 %
-        }else{
-          uint shortage_block_pct = (ethBlocksSinceLastDifficultyPeriod2.mult(100)).div( adjusDiffTargetTime );
-	give = 2;
-          uint shortage_block_pct_extra = shortage_block_pct.sub(100).limitLessThan(1000); //always between 0 and 1000
-          //make it easier
-          miningTarget = miningTarget.add(miningTarget.div(2000).mult(shortage_block_pct_extra));   //by up to 50 %
-        }
+          //make it harder
+                  secondsPerDay = secondsPerDay.add(secondsPerDay.mult(excess_block_pct_extra).div(2000));   //by up to 50 %
+             }else{
+                 uint shortage_block_pct = (ethBlocksSinceLastDifficultyPeriod2.mult(100)).div( secondsPerDay );
+
+                 uint shortage_block_pct_extra = shortage_block_pct.sub(100).limitLessThan(1000); //always between 0 and 1000
+
+                 //make it easier
+                secondsPerDay = secondsPerDay.sub(secondsPerDay.mult(shortage_block_pct_extra).div(2000));   //by up to 50 %
+            }
+            }else{
+                secondsPerDay = secondsPerDay * 2;
+            }
+            if(secondsPerDay <= 5)
+            {
+                secondsPerDay == 10;
+            }
+            if(secondsPerDay > 60 * 60 * 24 * 14)
+            {
+                secondsPerDay = 60 * 24 * 60 * 2;
+            }
+
+        lastepoch = epoch;
+        starttime = block.timestamp;
+    
+    }
+
+    //==================================AUCTIONEER======================================//
+
+    // Calls when sending Fantom
 
 
-        latestDifficultyPeriodStarted2 = blktimestamp;
+/*
+    receive() external payable {
+        burnFANTOMForMember(msg.sender);
+    }
+    */
 
-        if(miningTarget < _MINIMUM_TARGET) //very difficult
+    //fuction to get all the days bidders and attempt to cash them out
+
+
+/*
+function WIthdrawls for a previous day, all holders with over _percent starting at spot startdig(usually 0), and maxdig incase list grows large, Spots are the number to payout
+good settings _percent=5, startdig=0, maxdig=10000(doesnt hurt if too big), spots=20, _percent=100% (meaning anyone with 1% of the pot gets rewards)
+
+
+
+
+    function superEZBid(uint256 total) public returns (bool success)
+    {
+        uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
+        require(easyBid(total, daysleft));
+    }
+
+
+
+    function easyBid(uint256 total, uint256 _days) public returns (bool success) {
+
+    
+        require(futurebidder(msg.sender, currentEra, currentDay, _days, total));
+        return true;
+
+    }
+
+    function futurebidder(address member, uint256 era, uint256 startingday, uint256 daystobid, uint256 amtTotal) public returns (bool success)
+    {
+        require((startingday + daystobid) < daysPerEra, "WE ONLY HAVE SO MANY DAYS");
+        require(startingday >= currentDay, "Must not bid behind the days");
+        require(era >= currentEra, "no knucklehead");
+        require((amtTotal/daystobid) > (one0xBTCUnit/(era)/3), "0.333 0xBitcoin per Day required, sendmore");
+        require(IERC20(ZeroXBTCAddress).transferFrom(msg.sender, burnAddress, amtTotal), "NO WAY");
+        uint256 amt = amtTotal/daystobid;
+        for(uint256 x=startingday; x< (startingday + daystobid); x++)
         {
-          miningTarget = _MINIMUM_TARGET;
+            _recordBurn(msg.sender, member, era, x, amt);          
         }
+        return true;
+    }
 
-        if(miningTarget > _MAXIMUM_TARGET) //very easy
+*/
+    function WholeEraBurn0xBTCForMember(address member, uint256 _0xbtcAmountTotal) public payable returns (bool success)
+    {
+        uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
+        FutureBurn0xBTCEasier(currentEra, daysleft, member, _0xbtcAmountTotal);
+    }
+
+    function FutureBurn0xBTCEasier(uint _era, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public payable returns (bool success)
+    {
+        uint[] memory dd = new uint[](totalNumberrOfDays); 
+        uint[] memory amt = new uint[](totalNumberrOfDays); 
+        uint y=0;
+        for(uint x=currentDay; x< (currentDay+totalNumberrOfDays); x++)
         {
-          miningTarget = _MAXIMUM_TARGET;
+            dd[y] = x;
+            amt[y] = _0xbtcAmountTotal/totalNumberrOfDays;
+            y++;
         }
+        FutureBurn0xBTCArrays(_era, dd, _member, amt);
+    
+        return true;
     }
 
-
-    //42 m coins total
-    // = 
-    //21 million proof of work
-    // + 
-    //10.5 million proof of burn
-    // +
-    //10.5 million rewards for Liquidity Providers
-
-
-
-
-        //help debug mining software
-     function checkMintSolution(uint256 nonce, bytes32 challenge_digest, bytes32 challenge_number, uint testTarget) public view returns (bool success) {
-
-        bytes32 digest = bytes32(keccak256(abi.encodePacked(challenge_number,msg.sender,nonce)));
-
-        if(uint256(digest) > testTarget) revert();
-
-        return (digest == challenge_digest);
+    function FutureBurn0xBTCArrays(uint _era, uint[] memory fdays, address _member, uint[] memory _0xbtcAmount) public payable returns (bool success)
+    {
+        uint256 stricttotal =0;
+        uint256 _daysPerEra=daysPerEra;
+        uint _currentDay = currentDay;
+        uint _currentEra = currentEra; 
+        require(_era >= currentEra, "no knucklehead only bid on this era");
+    for(uint256 x = 0; x < fdays.length; x++)
+    {
+        uint256 dayamt = _0xbtcAmount[x];
+        if(_era == _currentEra)
+        {
+            require(fdays[x] >= _currentDay, "Must not bid behind the days");
         }
-		
-		
-
-    //this is a recent ethereum block hash, used to prevent pre-mining future blocks
-    function getChallengeNumber() public view returns (bytes32) {
-        return challengeNumber;
+        require(fdays[x] <= _daysPerEra, "Cant bid on days not in era");
+        stricttotal = stricttotal.add(dayamt);
+         _recordBurn(msg.sender, _member, _era, fdays[x], dayamt);
     }
-
-    //the number of zeroes the digest of the PoW solution requires.  Auto adjusts
-     function getMiningDifficulty() public view returns (uint) {
-        return _MAXIMUM_TARGET.div(miningTarget);
-    }
-
-    function getMiningTarget() public view returns (uint) {
-       return miningTarget;
-   }
-   
-    function getMiningMinted() public view returns (uint) {
-      return tokensMinted;
-    }
-
-
-    //21m coins total
-    //reward begins at 150 and is cut in half every reward era (as tokens are mined)
-    function getMiningReward() public view returns (uint) {
-        //once we get half way thru the coins, only get 25 per block
-
-         //every reward era, the reward amount halves.
-
-         return (150 * 10**uint(decimals) ).div( 2**rewardEra ) ;
-
-    }
-
-
-    //21m coins total
-    //reward begins at 150 and is cut in half every reward era (as tokens are mined)
-    function getEpoch() public view returns (uint) {
-        //once we get half way thru the coins, only get 25 per block
-
-         //every reward era, the reward amount halves.
-
-         return epochCount ;
-
-    }
-
-
-
-
-
-    //help debug mining software
-    function getMintDigest(uint256 nonce, bytes32 challenge_digest, bytes32 challenge_number) public view returns (bytes32 digesttest) {
-
-            bytes32 digest =  keccak256(abi.encodePacked(challengeNumber, msg.sender, nonce));
-
-        return digest;
-
-      }
-
-
-
-    // ------------------------------------------------------------------------
-
-    // Total supply
-
-    // ------------------------------------------------------------------------
-
-
-
-
-
-    // ------------------------------------------------------------------------
-
-    // Get the token balance for account `tokenOwner`
-
-    // ------------------------------------------------------------------------
-
-    function balanceOf(address tokenOwner) public override view returns (uint balance) {
-
-        return balances[tokenOwner];
-
-    }
-
-
-
-    // ------------------------------------------------------------------------
-
-    // Transfer the balance from token owner's account to `to` account
-
-    // - Owner's account must have sufficient balance to transfer
-
-    // - 0 value transfers are allowed
-
-    // ------------------------------------------------------------------------
-
-    function transfer(address to, uint tokens) public override returns (bool success) {
-
-        balances[msg.sender] = balances[msg.sender].sub(tokens);
-
-        balances[to] = balances[to].add(tokens);
-
-        emit Transfer(msg.sender, to, tokens);
-
+        require((stricttotal/fdays.length) >  (one0xBTCUnit/(_era)/10), "0.1 0xBitcoin per Day required, reduces every era");
+        require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, stricttotal), "NO OTHER WAY, send it the required 0xBitcoin");
+        emit BurnMultipleDays(msg.sender, _member, _era, fdays.length, stricttotal);
         return true;
-
     }
 
+    function burn0xBTCForMember(address member, uint256 _0xbtcAmount) public payable  {
+        require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, _0xbtcAmount), "NO WAY, requires 0xBTC send");
 
 
-    // ------------------------------------------------------------------------
-
-    // Token owner can approve for `spender` to transferFrom(...) `tokens`
-
-    // from the token owner's account
-
-    //
-
-    // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
-
-    // recommends that there are no checks for the approval double-spend attack
-
-    // as this should be implemented in user interfaces
-
-    // ------------------------------------------------------------------------
-
-    function approve(address spender, uint tokens) public override returns (bool success) {
-
-        allowed[msg.sender][spender] = tokens;
-
-        emit Approval(msg.sender, spender, tokens);
-
-        return true;
-
-    }
-
-
-
-    // ------------------------------------------------------------------------
-
-    // Transfer `tokens` from the `from` account to the `to` account
-
-    //
-
-    // The calling account must already have sufficient tokens approve(...)-d
-
-    // for spending from the `from` account and
-
-    // - From account must have sufficient balance to transfer
-
-    // - Spender must have sufficient allowance to transfer
-
-    // - 0 value transfers are allowed
-
-    // ------------------------------------------------------------------------
-
-    function transferFrom(address from, address to, uint tokens) public override returns (bool success) {
-
-        balances[from] = balances[from].sub(tokens);
-
-        allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
-
-        balances[to] = balances[to].add(tokens);
-
-        emit Transfer(from, to, tokens);
-
-        return true;
-
-    }
-
-
-    // ------------------------------------------------------------------------
-
-    // Returns the amount of tokens approved by the owner that can be
-
-    // transferred to the spender's account
-
-    // ------------------------------------------------------------------------
-
-    function allowance(address tokenOwner, address spender) public override view returns (uint remaining) {
-
-        return allowed[tokenOwner][spender];
-
-    }
-
-
-
-    // ------------------------------------------------------------------------
-
-    // Token owner can approve for `spender` to transferFrom(...) `tokens`
-
-    // from the token owner's account. The `spender` contract function
-
-    // `receiveApproval(...)` is then executed
-
-    // ------------------------------------------------------------------------
-
-    function receiveApproval(address from, uint256 tokens, address token, bytes memory data) public override{
-      require(token == address(this));
-      
-       IERC20(address(this)).transfer(from, tokens);  
+        _recordBurn(msg.sender, member, currentEra, currentDay, _0xbtcAmount);
+        emit Burn(msg.sender, member, currentEra, currentDay, _0xbtcAmount, mapEraDay_Units[currentEra][currentDay]);
+            
+}
+    
+    
+    // Internal - Withdrawal function
+    
+    // Internal - Records burn
+    function _recordBurn(address _payer, address _member, uint _era, uint _day, uint _eth) private {
+        if (mapEraDay_MemberUnits[_era][_day][_member] == 0){                               // If hasn't contributed to this Day yet
+            mapMemberEra_Days[_member][_era].push(_day);                                    // Add it
+            mapEraDay_MemberCount[_era][_day] += 1;                                         // Count member
+            mapEraDay_Members[_era][_day].push(_member);                                    // Add member
+        }
+        mapEraDay_MemberUnits[_era][_day][_member] += _eth;                                 // Add member's share
+        mapEraDay_UnitsRemaining[_era][_day] += _eth;                                       // Add to total historicals
+        mapEraDay_Units[_era][_day] += _eth;                                                // Add to total outstanding
+        totalBurnt += _eth;                                                                 // Add to total burnt
+        _updateEmission();                                                                  // Update emission Schedule
     }
     
+        //======================================WITHDRAWAL======================================//
+    // Used to efficiently track participation in each era
+    function getDaysContributedForEra(address member, uint era) public view returns(uint){
+        return mapMemberEra_Days[member][era].length;
+    }
+    // Call to withdraw a claim
+    function withdrawShare(uint era, uint day) external returns (uint value) {
+        uint memberUnits = mapEraDay_MemberUnits[era][day][msg.sender];  
+        assert (memberUnits != 0); // Get Member Units
+        value = _withdrawShare(era, day, msg.sender);
+    }
+    // Call to withdraw a claim for another member
+    function withdrawShareForMember(uint era, uint day, address member) public returns (uint value) {
+        uint memberUnits = mapEraDay_MemberUnits[era][day][member];  
+        assert (memberUnits != 0); // Get Member Units
+        value = _withdrawShare(era, day, member);
+        return value;
+    }
+    // Internal - withdraw function
+    function _withdrawShare (uint _era, uint _day, address _member) private returns (uint value) {
+        _updateEmission(); 
+        if (_era < currentEra) {                                                            // Allow if in previous Era
+            value = _processWithdrawal(_era, _day, _member);                                // Process Withdrawal
+        } else if (_era == currentEra) {                                                    // Handle if in current Era
+            if (_day < currentDay) {                                                        // Allow only if in previous Day
+                value = _processWithdrawal(_era, _day, _member);                            // Process Withdrawal
+            }
+        }  
+        return value;
+    }
+
+    function z_ChangeMaxWithdrawl( uint newMaxDay, uint newMaxEra) public returns  (bool success){
+        ZmapMember_DayClaimedTo[msg.sender] = newMaxDay;
+        ZmapMember_EraClaimedTo[msg.sender] = newMaxEra;
+        return true;
+    }
+    
+    function WithdrawEasiest() public
+    {
+        WithdrawEz(msg.sender);
+    }
 
 
+    function WithdrawEz(address _member) public
+    {
+        uint startingday = ZmapMember_DayClaimedTo[_member];
+        uint startingera = ZmapMember_EraClaimedTo[_member];
+        if(startingday == 0)
+        {
+            startingday = 1;
+        }
+        if(startingera == 0)
+        {
+            startingera = 1;
+        }
+        uint maxDay=1;
+        for(uint y=startingera; y <= currentEra; y++){
+          if(y != currentEra)
+           {
+                maxDay = daysPerEra;
+            }
+            else
+            {
+                maxDay = currentDay - 1;
+            }
+           uint[] memory dd = new uint[](maxDay-startingday+1); 
+           for(uint x=startingday; x<= maxDay; x++)
+           {
+               dd[x-startingday] = x ;
+           }
+           WithdrawlsDays(y, dd, _member);
+        }
+        ZmapMember_DayClaimedTo[_member] = currentDay;
+        ZmapMember_DayClaimedTo[_member] = currentEra;
+    }
 
+    function WithdrawlsDays(uint _era, uint[] memory fdays, address _member) public returns (bool success)
+    {
+    uint256 stricttotal = 0;
+    for(uint256 x = 0; x < fdays.length; x++)
+    {
+        stricttotal = stricttotal.add( _processWithdrawalRETURNSVAL (_era, fdays[x], _member) );
+    }
+    IERC20(AddressForgeToken).transfer(_member, stricttotal);
+    emit MegaWithdrawal(msg.sender, _member, _era, fdays.length, stricttotal);
+    
+    return true;
+}
 
-        
+    function _processWithdrawalRETURNSVAL (uint _era, uint256 _day, address _member) private returns (uint256 value) {
+        uint memberUnits = mapEraDay_MemberUnits[_era][_day][_member];                      // Get Member Units
+        if (memberUnits == 0) { 
+            value = 0;                                                                      // Do nothing if 0 (prevents revert)
+        } else {
+            value = getEmissionShare(_era, _day, _member);                                  // Get the emission Share for Member
+            mapEraDay_MemberUnits[_era][_day][_member] = 0;                                 // Set to 0 since it will be withdrawn
+            mapEraDay_UnitsRemaining[_era][_day] = mapEraDay_UnitsRemaining[_era][_day].sub(memberUnits);  // Decrement Member Units
+            mapEraDay_EmissionRemaining[_era][_day] = mapEraDay_EmissionRemaining[_era][_day].sub(value);  // Decrement emission
+            totalEmitted += value*4;
+
+            //We emit all in one transfer.   
+        }
+        return value*4;
+    }
+    function _processWithdrawal (uint _era, uint _day, address _member) private returns (uint value) {
+        uint memberUnits = mapEraDay_MemberUnits[_era][_day][_member];                      // Get Member Units
+        if (memberUnits == 0) { 
+            value = 0;                                                                      // Do nothing if 0 (prevents revert)
+        } else {
+            value = getEmissionShare(_era, _day, _member);                                  // Get the emission Share for Member
+            mapEraDay_MemberUnits[_era][_day][_member] = 0;                                 // Set to 0 since it will be withdrawn
+            mapEraDay_UnitsRemaining[_era][_day] = mapEraDay_UnitsRemaining[_era][_day].sub(memberUnits);  // Decrement Member Units
+            mapEraDay_EmissionRemaining[_era][_day] = mapEraDay_EmissionRemaining[_era][_day].sub(value);  // Decrement emission
+            totalEmitted += value*4;            
+            emit Withdrawal(msg.sender, _member, _era, _day, value*4, mapEraDay_EmissionRemaining[_era][_day]);
+            
+            // ERC20 transfer function
+            IERC20(AddressForgeToken).transfer(_member, value*4); // 8,192 tokens a auction aka almost half the supply an era!
+        }
+        return value*4;
+    }
+    
+    
+    function getEmissionShare(uint era, uint day, address member) public view returns (uint value) {
+        uint memberUnits = mapEraDay_MemberUnits[era][day][member];                         // Get Member Units
+        if (memberUnits == 0) {
+            return 0;                                                                       // If 0, return 0
+        } else {
+            uint totalUnits = mapEraDay_UnitsRemaining[era][day];                           // Get Total Units
+            uint emissionRemaining = mapEraDay_EmissionRemaining[era][day];                 // Get emission remaining for Day
+            uint balance = IERC20(AddressForgeToken).balanceOf(address(this));                                      // Find remaining balance
+            if (emissionRemaining > balance) { emissionRemaining = balance; }               // In case less than required emission
+            value = (emissionRemaining * memberUnits) / totalUnits;                         // Calculate share
+            return  value;                            
+        }
+    }
+    //======================================EMISSION========================================//
+    // Internal - Update emission function
+    function _updateEmission() private {
+        uint _now = block.timestamp;                                                                    // Find now()
+        if (_now >= nextDayTime) {                                                          // If time passed the next Day time
+            if (currentDay >= daysPerEra) {                                                 // If time passed the next Era time
+                currentEra += 1; currentDay = 0;                                            // Increment Era, reset Day
+                emission = getNextEraEmission();                                            // Get correct emission
+                mapEra_Emission[currentEra] = emission;                                     // Map emission to Era
+                emit NewEra(currentEra, emission, totalBurnt); 
+            }
+            changeAuctionTime();
+            currentDay += 1;                                                                // Increment Day
+            nextDayTime = _now + secondsPerDay;                                             // Set next Day time
+            emission = getDayEmission();                                                    // Check daily Dmission
+            mapEraDay_EmissionRemaining[currentEra][currentDay] = emission;                 // Map emission to Day
+            uint _era = currentEra; uint _day = currentDay-1;
+            if(currentDay == 1){ _era = currentEra-1; _day = daysPerEra; }                  // Handle New Era
+            emit NewDay(currentEra, currentDay, nextDayTime, 
+            mapEraDay_Units[_era][_day], mapEraDay_MemberCount[_era][_day]);
+            
+        }
+    }
+    // Calculate Era emission
+    function getNextEraEmission() public view returns (uint) {
+        if (emission > coin) {                                                              // Normal Emission Schedule
+            return emission / 2;                                                            // Emissions: 2048 -> 1.0
+        } else{                                                                             // Enters Fee Era
+            return coin;                                                                    // Return 1.0 from fees
+        }
+    }
+    // Calculate Day emission
+    function getDayEmission() public view returns (uint) {
+        uint balance = IERC20(AddressForgeToken).balanceOf(address(this));                                            // Find remaining balance
+        if (balance > emission) {                                                           // Balance is sufficient
+            return emission;                                                                // Return emission
+        } else {                                                                            // Balance has dropped low
+            return balance;                                                                 // Return full balance
+        }
+    }
+    function z_transferERC20TokenToMinerContract(address tokenAddress, uint tokens) public returns (bool success) {
+        require((tokenAddress != address(this)) && tokenAddress != AddressForgeToken);
+        return IERC20(tokenAddress).transfer(AddressForgeToken, IERC20(tokenAddress).balanceOf(address(this))); 
+
+    }
 }
