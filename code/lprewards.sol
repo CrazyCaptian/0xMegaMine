@@ -380,7 +380,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
 
     function earned2(address account) public view returns (uint128) {
         unchecked { 
-            return uint128(balanceOf(account)*(rewardPerToken2()-userRewards2[account].userRewardPerTokenPaid2)/1e18 + userRewards2[account].rewards2);
+            return uint128(balanceOf(account)*(rewardPerToken2()-userRewards2[account].userRewardPerTokenPaid2)/1e8 + userRewards2[account].rewards2);
         }
     }
 
