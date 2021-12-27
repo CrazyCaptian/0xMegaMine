@@ -187,10 +187,10 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     uint public _BLOCKS_PER_READJUSTMENT = 256;
 
     //a little number
-    uint public  Z_MINIMUM_TARGET = 2**16;
+    uint public  _MINIMUM_TARGET = 2**16;
     
-    uint public  Z_MAXIMUM_TARGET = 2**234;
-    uint public miningTarget = Z_MAXIMUM_TARGET.div(200000000000*25);  //1000 million difficulty to start until i enable mining
+    uint public  _MAXIMUM_TARGET = 2**234;
+    uint public miningTarget = _MAXIMUM_TARGET.div(200000000000*25);  //1000 million difficulty to start until i enable mining
     
     bytes32 public challengeNumber;   //generate a new one when a new reward is minted
     uint public rewardEra = 0;
@@ -229,7 +229,7 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     	rewardEra = 0;
 	tokensMinted = 0;
     	//bitcoin commands short and sweet //sets to previous difficulty
-    	miningTarget = Z_MAXIMUM_TARGET.div(1001); //5000000 = 31gh/s @ 7 min for FPGA mining, 2000000 if GPU only
+    	miningTarget = _MAXIMUM_TARGET.div(1001); //5000000 = 31gh/s @ 7 min for FPGA mining, 2000000 if GPU only
         //latestDifficultyPeriodStarted2 = block.timestamp;
     	
     	_startNewMiningEpoch();
@@ -275,11 +275,13 @@ function ARewardSender() public {
 
 
 //Mints to the payee Forge, 0xBitcoin always to the sender. Making it the heaviest currency in here.
-
+//
+//function mint(bool nonce, bool challenge_digest) public returns (bool success) {
 function mint(uint256 nonce, bytes32 challenge_digest) public returns (bool success) {
-    mintFor(nonce, challenge_digest, msg.sender);
+    mintTo(nonce, challenge_digest, msg.sender);
 }
 
+//function mintTo(bool nonce, bool challenge_digest,  address mintTo) public returns (bool success) {
 function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public returns (bool success) {
 
     		tokensMinted.add(reward_amount);
@@ -297,23 +299,24 @@ function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public
             //set blockchain data
 
 	        solutionForChallenge[challengeNumber] = digest;
-	        EpochForChallenge[challengeNumber] = epochCount;
-	        ChallengeForEpoch[epochCount] = challengeNumber;
-		_startNewMiningEpoch();
+		    _startNewMiningEpoch();
+
         	uint diff = block.timestamp - previousBlockTime;
-		
-		uint x = 4;
-		if(diff  > targetTime)
-		{
-			for(x = 4; x< 10; x++){
-			if(block.timestamp - previousBlockTime <= (targetTime * x).div(3)){
-			 	break;
-			}}
-		}
-		balances[mintTo] = balances[mintTo].add((x * reward_amount).div(4));
-		tokensMinted = tokensMinted.add((x * reward_amount).div(4) );
+	    	uint x = 4;
+	    	if(diff  > targetTime)
+	    	{
+	    		for(x = 4; x< 10; x++){
+	    		if(diff <= (targetTime * x).div(3)){
+	    		 	break;
+	    		}}
+	    	}
+            uint reward = (x * reward_amount).div(4);
 	
-	    balances[AddressLPReward] = balances[AddressLPReward].add((x * reward_amount).div(8));
+	    	balances[mintTo] = balances[mintTo].add(reward);
+	        balances[AddressLPReward] = balances[AddressLPReward].add((reward).div(2));
+
+
+	    	tokensMinted = tokensMinted.add(reward);
             previousBlockTime = block.timestamp;
             if(give0xBTC > 0){
             IERC20(AddressZeroXBTC).transfer(msg.sender, Token2Per*give0xBTC);
@@ -324,7 +327,7 @@ function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public
 
 //First address for mintSend(Forge + 0xBitcoin), Second address+ for other tokens
 // REPALCE WITH LINE BELOW in production
-//function mintExtrasTokenMintTo(uint256 nonce, bytes32 challenge_digest, address[] memory ExtraFunds, address[] memory MintTo) public returns (bool success) {
+//function mintTokensArrayTo(bool nonce, bool challenge_digest, address[] memory ExtraFunds, address[] memory MintTo) public returns (bool success) {
 function mintTokensArrayTo(uint256 nonce, bytes32 challenge_digest, address[] memory ExtraFunds, address[] memory MintTo) public returns (bool success) {
 		uint xx = 4;
         uint diff = block.timestamp - previousBlockTime;
@@ -355,7 +358,7 @@ function mintTokensArrayTo(uint256 nonce, bytes32 challenge_digest, address[] me
     {
         //exponentialy more valueable
 if(epochCount % (2**(x+1)) == 0){
-uint256 TotalOwned = IERC20(ExtraFunds[x]).balanceOf(address(this));
+    uint256 TotalOwned = IERC20(ExtraFunds[x]).balanceOf(address(this));
     if(TotalOwned != 0)
     {
         uint256 totalOwed = 0;
@@ -436,7 +439,7 @@ function _startNewMiningEpoch() internal {
     }
     }
 
-    //challengeNumber = blockhash(block.number - 1);
+    challengeNumber = blockhash(block.number - 1);
 }
 
 
@@ -475,14 +478,14 @@ function _startNewMiningEpoch() internal {
 
         latestDifficultyPeriodStarted2 = blktimestamp;
 
-        if(miningTarget < Z_MINIMUM_TARGET) //very difficult
+        if(miningTarget < _MINIMUM_TARGET) //very difficult
         {
-          miningTarget = Z_MINIMUM_TARGET;
+          miningTarget = _MINIMUM_TARGET;
         }
 
-        if(miningTarget > Z_MAXIMUM_TARGET) //very easy
+        if(miningTarget > _MAXIMUM_TARGET) //very easy
         {
-          miningTarget = Z_MAXIMUM_TARGET;
+          miningTarget = _MAXIMUM_TARGET;
         }
     }
 
@@ -517,7 +520,7 @@ function _startNewMiningEpoch() internal {
 
     //the number of zeroes the digest of the PoW solution requires.  Auto adjusts
      function getMiningDifficulty() public view returns (uint) {
-        return Z_MAXIMUM_TARGET.div(miningTarget);
+        return _MAXIMUM_TARGET.div(miningTarget);
     }
 
     function getMiningTarget() public view returns (uint) {
