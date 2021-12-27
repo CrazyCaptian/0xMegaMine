@@ -519,7 +519,10 @@ function _startNewMiningEpoch() internal {
     function getMiningTarget() public view returns (uint) {
        return miningTarget;
    }
-
+   
+    function getMiningMinted() public view returns (uint) {
+      return tokensMinted;
+    }
 
 
     //21m coins total
