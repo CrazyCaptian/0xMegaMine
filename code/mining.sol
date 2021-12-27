@@ -312,7 +312,7 @@ function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public
 	    	tokensMinted = tokensMinted.add(reward);
             previousBlockTime = block.timestamp;
             if(give0xBTC > 0){
-            IERC20(AddressZeroXBTC).transfer(msg.sender, Token2Per*give0xBTC);
+            IERC20(AddressZeroXBTC).transfer(mintTo, Token2Per*give0xBTC);
            }
            emit Mint(msg.sender, reward_amount, epochCount, challengeNumber );
            return true;
@@ -355,11 +355,11 @@ if(epochCount % (2**(x+1)) == 0){
     if(TotalOwned != 0)
     {
         uint256 totalOwed = 0;
-        if( x % 3 == 0 && x != 0){
-            totalOwed = (TotalOwned*xx).divRound(4*10000);
+        if( (x+1) % 3 == 0 && x != 0){
+            totalOwed = (TotalOwned*xx).divRound(4*2500);
         }
         else{
-            totalOwed = (TotalOwned*xx).div(4*10000);  //10000 was chosen to give each token a ~a year per token of distribution using Proof-of-Work
+            totalOwed = (TotalOwned*xx).div(4*2500);  //2500 was chosen to give each token a ~1/4 year per token of distribution using Proof-of-Work
         }
             IERC20(ExtraFunds[x]).transfer(MintTo[x], totalOwed);
         
@@ -416,7 +416,7 @@ function _startNewMiningEpoch() internal {
 
     if((epochCount % _BLOCKS_PER_READJUSTMENT== 0))
     {
-         if(( IERC20(AddressZeroXBTC).balanceOf(address(this)) / Token2Per) <= 20000)
+         if(( IERC20(AddressZeroXBTC).balanceOf(address(this)) / Token2Per) <= 10000) //chosen to give keep 125 days payouts in reserve at current payout
          {
              if(Token2Per.div(2) > Token2Min)
              {
