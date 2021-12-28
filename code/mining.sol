@@ -742,6 +742,14 @@ function _startNewMiningEpoch() internal {
 
 
 
+  //Do not allow ETH to enter
+  receive() external payable {
+    revert();
+  }
+
+  fallback() external payable {
+    revert();
+  }
 
         
 }
