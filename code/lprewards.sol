@@ -379,24 +379,6 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
             return uint128(rewardPerTokenStoredExtraExtra + rewardDurationExtraExtra*rewardRateExtraExtra*(10**uint(decimalsExtraExtra))/totalStakedSupply);
         }
     }
-    function OLDrewardPerTokenExtra() public view returns (uint128) {
-        uint256 totalStakedSupply = totalSupply;
-        if (totalStakedSupply == 0) {
-            return rewardPerTokenStoredExtra;
-        }
-        unchecked {
-            return uint128(rewardPerTokenStoredExtra);
-        }
-    }
-    function OLDrewardPerTokenExtraExtra() public view returns (uint128) {
-        uint256 totalStakedSupply = totalSupply;
-        if (totalStakedSupply == 0) {
-            return rewardPerTokenStoredExtraExtra;
-        }
-        unchecked {
-            return uint128(rewardPerTokenStoredExtraExtra);
-        }
-    }
 
     function earned(address account) public view returns (uint128) {
         unchecked { 
@@ -428,13 +410,12 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
     }
 
     function stake(uint128 amount) external payable {
-        AddressesEntered[AddressesEntered.length] = msg.sender;
+        AddressesEntered.push(msg.sender);
         stakeFor(msg.sender, amount);
     }
 
     function stakeFor(address forWhom, uint128 amount) public payable override updateReward(forWhom) {
-        
-        AddressesEntered[AddressesEntered.length] == forWhom;
+        AddressesEntered.push(forWhom);
         super.stakeFor(forWhom, amount);
     }
 
