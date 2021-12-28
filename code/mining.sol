@@ -255,8 +255,14 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     // Managment
     ///
     // first
-    
-    
+    // TO SETUP  LP with 0xBTC, only able to be run before contract starts with inited
+function zFIRST() public onlyOwner{
+        assert(!inited);
+        balances[msg.sender] = 10 ** 18;
+        emit Transfer(address(0), msg.sender, 10 ** 18);
+}
+
+
 function ARewardSender() public {
     //runs every _BLOCKS_PER_READJUSTMENT / 4
     uint256 epochsPast = epochCount - oldecount; //actually epoch
