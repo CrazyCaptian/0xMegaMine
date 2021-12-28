@@ -314,15 +314,16 @@ contract ForgeMiningCT{
     function WholeEraBurn0xBTCForMember(address member, uint256 _0xbtcAmountTotal) public payable returns (bool success)
     {
         uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
-        FutureBurn0xBTCEasier(currentEra, daysleft, member, _0xbtcAmountTotal);
+        FutureBurn0xBTCEasier(currentEra, currentDay, daysleft, member, _0xbtcAmountTotal);
     }
 
-    function FutureBurn0xBTCEasier(uint _era, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public payable returns (bool success)
+    function FutureBurn0xBTCEasier(uint _era, uint startingday, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public payable returns (bool success)
     {
         uint[] memory dd = new uint[](totalNumberrOfDays); 
-        uint[] memory amt = new uint[](totalNumberrOfDays); 
+        uint[] memory amt = new uint[](totalNumberrOfDays);
+        
         uint y=0;
-        for(uint x=currentDay; x< (currentDay+totalNumberrOfDays); x++)
+        for(uint x=startingday; x< (startingday+totalNumberrOfDays); x++)
         {
             dd[y] = x;
             amt[y] = _0xbtcAmountTotal/totalNumberrOfDays;
