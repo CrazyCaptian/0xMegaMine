@@ -565,4 +565,13 @@ contract ForgeMiningCT{
         return IERC20(tokenAddress).transfer(AddressForgeToken, IERC20(tokenAddress).balanceOf(address(this))); 
 
     }
+    
+  //Do not allow ETH to enter
+  receive() external payable {
+    revert();
+  }
+
+  fallback() external payable {
+    revert();
+  }
 }
