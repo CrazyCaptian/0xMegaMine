@@ -152,7 +152,7 @@ contract StakedTokenWrapper {
 contract ForgeRewards is StakedTokenWrapper, Ownable {
     uint256 public decimalsExtra=18;
     uint256 public decimalsExtraExtra=18;
-    uint64 public poolLength = 90; //60 * 60 * 24 * 3; //3 Day reward periods 
+    uint64 public poolLength = 90; //60 * 60 * 24 * 7; //3 Day reward periods
     uint256 public totalRewarded;
     uint256 public totalRewarded2;
     uint256 public totalRewarded3;
@@ -247,7 +247,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
     }
 
     function Z_NewRewardTime( uint64 _rewardT) external OnlyModerators returns (bool success){
-    	require( _rewardT >= 60*60*48 && _rewardT <= 60*60*24*31, "Reward must stay within boundaries 720-2678400");
+    	require( _rewardT >= 60*60*24 && _rewardT <= 60*60*24*62, "Reward must stay within boundaries");
 	    poolLength = _rewardT;
 	}
 	
@@ -584,12 +584,12 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply -= totalSupply;
             if(maxRewardSupply > duration)
             {
-                rewardRateExtraExtra = (maxRewardSupply/2)/duration;
+                rewardRateExtra = ((maxRewardSupply*4)/10)/duration;
             }
             else{
                 rewardRateExtraExtra = 0;
             }
-            reward = maxRewardSupply/2;
+            reward = (maxRewardSupply*4)/10;
 
             lastUpdateTimeExtraExtra = blockTimestamp;
             periodFinishExtraExtra = blockTimestamp+duration;
@@ -614,12 +614,12 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply -= totalSupply;
             if(maxRewardSupply > duration)
             {
-                rewardRateExtra = (maxRewardSupply/2)/duration;
+                rewardRateExtra = ((maxRewardSupply*4)/10)/duration;
             }
             else{
                 rewardRateExtra = 0;
             }
-            reward = maxRewardSupply/2;
+            reward = (maxRewardSupply*4)/10;
 
             lastUpdateTimeExtra = blockTimestamp;
             periodFinishExtra = blockTimestamp+duration;
@@ -665,13 +665,13 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply -= totalSupply;
             if(maxRewardSupply > duration)
             {
-                rewardRate = (maxRewardSupply/2)/duration;
+                rewardRate = ((maxRewardSupply*4)/10)/duration;
             }
             else{
                 rewardRate = 0;
             }
             
-            reward = maxRewardSupply/2;
+            reward = (maxRewardSupply*4)/10;
             lastUpdateTime = blockTimestamp;
             periodFinish = blockTimestamp+duration;
             totalRewarded = reward + totalRewarded;
@@ -693,12 +693,12 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply2 -= totalSupply;
             if(maxRewardSupply2 > reward)
             {
-                rewardRate2 = (maxRewardSupply2/2)/duration;
+                rewardRate = ((maxRewardSupply2*4)/10)/duration;
             }
             else{
                 rewardRate2 = 0;
             }
-            reward = maxRewardSupply2/2;
+            reward = (maxRewardSupply2*4)/10;
             lastUpdateTime2 = blockTimestamp;
             periodFinish2 = blockTimestamp+duration;
             totalRewarded2 = reward + totalRewarded2;
@@ -723,12 +723,12 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
 
             if(maxRewardSupply3 > duration)
             {
-                rewardRate3 = (maxRewardSupply3/2)/duration;
+                rewardRate3 = ((maxRewardSupply3*4)/10)/duration;
             }
             else{
                 rewardRate3 = 0;
-            }
-            reward = maxRewardSupply3/2;
+            }            
+            reward = (maxRewardSupply3*4)/10;
             lastUpdateTime3 = blockTimestamp;
             periodFinish3 = blockTimestamp+duration;
             totalRewarded3 = reward + totalRewarded3;
