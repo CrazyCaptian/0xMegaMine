@@ -581,34 +581,8 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             emit RewardPaid(msg.sender, reward, reward2, reward3, rewardExtra, rewardExtraExtra);
     }
  
-/*
-    function getRewardExtra() public updateReward(msg.sender) {
-        uint256 rewardExtra = earnedExtra(msg.sender);
-        if (rewardExtra > 0) {
-            userRewardsExtra[msg.sender].rewardsExtra = 0;
-            require(rewardTokenExtra.transfer(msg.sender, rewardExtra), "reward transfer failed");
-            totalRewardedExtra = totalRewardedExtra - rewardExtra;
-        }
-            emit RewardPaidExtra(msg.sender, rewardExtra);
-    }
-
-    function getRewardExtraExtra() public updateReward(msg.sender) {
-        
-        uint256 rewardExtraExtra = earnedExtraExtra(msg.sender);
-        if(rewardExtraExtra > 0)
-        {
-            
-            userRewardsExtraExtra[msg.sender].rewardsExtraExtra = 0;
-            require(rewardTokenExtraExtra.transfer(msg.sender, rewardExtraExtra), "reward token 2 transfer failed");
-            totalRewardedExtra = totalRewardedExtraExtra - rewardExtraExtra;
-        }
-        
-            emit RewardPaidExtraExtra(msg.sender, rewardExtraExtra);
-    }
-
-
-
-*/
+ 
+ 
     function Z_setRewardParamsExtraExtra(uint256 reward, uint64 duration) external {
         unchecked {
             require(reward > 0);
