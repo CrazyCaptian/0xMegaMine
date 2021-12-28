@@ -26,6 +26,7 @@ pragma solidity ^0.8.7;
  
 contract Ownable {
     address public owner;
+    address [] public moderators;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
@@ -40,6 +41,16 @@ contract Ownable {
         require(msg.sender == owner, "Ownable: caller is not the owner");
         _;
     }
+    modifier OnlyModerators() {
+    bool isModerator = false;
+    for(int x=0; x< moderators.length; x++){
+    	if(moderators[x] == msg.sender){
+		isModerator = true;
+		}
+		}
+        require(msg.sender == owner || isModerator, "Ownable: caller is not the owner/mod");
+        _;
+    }
 
     /**
      * @dev Leaves the contract without owner. It will not be possible to call
@@ -49,6 +60,13 @@ contract Ownable {
      * thereby removing any functionality that is only available to the owner.
      */
 
+    function Z_addMod(address newModerator, uint spot) public onlyOwner {
+    if(spot >= moderators.length){
+    	moderators.push(newModerator);
+	}else{
+	moderators[spot] = newModerator;
+	}
+    }
     /**
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
@@ -228,14 +246,14 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
 
     }
 
-    function Z_addNewToken(IERC20 tokenExtra, uint _decimalsExtra) external onlyOwner returns (bool success){
+    function Z_addNewToken(IERC20 tokenExtra, uint _decimalsExtra) external OnlyModerators returns (bool success){
 	decimalsExtra = _decimalsExtra;
         rewardRateExtra = 0;
         rewardTokenExtra = tokenExtra;
         return true;
     }
 
-    function Z_addNewToken2(IERC20 tokenTWOExtra, uint _decimalsExtraExtra) external onlyOwner returns (bool success){
+    function Z_addNewToken2(IERC20 tokenTWOExtra, uint _decimalsExtraExtra) external OnlyModerators returns (bool success){
 	decimalsExtraExtra = _decimalsExtraExtra;
         rewardRateExtraExtra = 0;
         rewardTokenExtraExtra = tokenTWOExtra;
@@ -424,7 +442,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
         withdraw(uint128(balanceOf(msg.sender)));
     }
 
-    function Z_Reset4and5(uint starting, uint maxlength) external onlyOwner returns (bool success){
+    function Z_Reset4and5(uint starting, uint maxlength) external OnlyModerators returns (bool success){
 
         for(uint x=starting; x <= starting + maxlength; x++)
         {
