@@ -152,7 +152,7 @@ contract StakedTokenWrapper {
 contract ForgeRewards is StakedTokenWrapper, Ownable {
     uint256 public decimalsExtra=18;
     uint256 public decimalsExtraExtra=18;
-    uint64 public poolLength = 90; //60 * 60 * 24 * 21; //21 Day rewards periods
+    uint64 public poolLength = 90; //60 * 60 * 24 * 3; //3 Day reward periods 
     uint256 public totalRewarded;
     uint256 public totalRewarded2;
     uint256 public totalRewarded3;
@@ -613,7 +613,6 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
         unchecked {
             require(reward > 0);
             duration = poolLength;  // Updates every 14 days
-            Era += 1;
             rewardPerTokenStoredExtraExtra = rewardPerTokenExtraExtra();
             uint64 blockTimestamp = uint64(block.timestamp);
             require(blockTimestamp > (periodFinishExtra + (duration*4) / (3)), "Claim period allows for withdrawal period before claims change 1/3 # of days");
@@ -644,7 +643,6 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
         unchecked {
             require(reward > 0);
             duration = poolLength;  // Updates every 14 days
-            Era += 1;
             rewardPerTokenStoredExtra = rewardPerTokenExtra();
             uint64 blockTimestamp = uint64(block.timestamp);
             require(blockTimestamp > (periodFinishExtra + (duration*4) / (3)), "Claim period allows for withdrawal period before claims change 1/3 # of days");
@@ -696,7 +694,6 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
         unchecked {
             require(reward > 0);
             duration = poolLength;  // Updates every 14 days
-            Era += 1;
             rewardPerTokenStored = rewardPerToken();
             uint64 blockTimestamp = uint64(block.timestamp);
             require(blockTimestamp > periodFinish, "MUST BE AFTER ERA");
@@ -725,7 +722,6 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
         unchecked {
             require(reward > 0);
             duration = poolLength;  // Updates every 14 days
-            Era += 1;
             rewardPerTokenStored2 = rewardPerToken2();
             uint64 blockTimestamp = uint64(block.timestamp);
             require(blockTimestamp > periodFinish2, "MUST BE AFTER ERA");
