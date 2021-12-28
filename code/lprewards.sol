@@ -8,7 +8,7 @@
 //The larger the pool, the larger the order the token can handle
 
 //
-//Rewards: Forge, 0xBitcoin, and ETH currently.
+//Rewards: Forge, 0xBitcoin, and Polygon currently.
 // Funds gathered will be dispered over 21 days. 21 Day reward period
 //Room to Expand to two other cryptocurrencies(only admin in everything! This feature will be decentralized)
 
