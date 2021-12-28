@@ -422,7 +422,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
         withdraw(uint128(balanceOf(msg.sender)));
     }
 
-    function Z_Reset4and5(uint starting, uint maxlength) public returns (bool success){
+    function Z_Reset4and5(uint starting, uint maxlength) external onlyOwner returns (bool success){
 
         for(uint x=starting; x <= starting + maxlength; x++)
         {
