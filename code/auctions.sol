@@ -171,7 +171,7 @@ contract GasPump {
 }
 
 contract ForgeMining{
-    function getEpoch() public view returns (uint) {}
+    function getMiningMinted() public view returns (uint) {}
     }
 
   contract ForgeAuctions is  GasPump, Ownabled
@@ -226,6 +226,7 @@ contract ForgeMining{
     event MegaWithdrawal(address indexed caller, address indexed member, uint era, uint TotalDays, uint256 stricttotal);
     uint256 starttime = 0;
     uint256 public lastepoch = 0;
+    uint256 public lastMinted = 0;
     uint256 public blocktime = 36 * 60; //36 min blocks in ProofOfWork
     //=====================================CREATION=========================================//
 
@@ -254,23 +255,24 @@ contract ForgeMining{
         function zSetUP1(address token, address _ZeroXBTCAddress) public onlyOwner22 {
         AddressForgeToken = token;
         owner22 = address(0);
-        lastepoch =  0;
+        lastMinted =  0;
         AddressZeroXBTC = _ZeroXBTCAddress;
         ForgeMiningToken = ForgeMining(token);
-        lastepoch = ForgeMiningToken.getEpoch();
+        lastMinted = ForgeMiningToken.getMiningMinted();
         starttime = block.timestamp;
 
     }
 
 
     function changeAuctionTime() internal {
-        uint256 epoch = ForgeMiningToken.getEpoch();
+        uint tokensMinted = ForgeMiningToken.getMiningMinted();
 
 
-             uint epochsMined = (epoch - lastepoch); 
+             uint diff = tokensMinted - lastMinted;
+             uint epochsMined = diff / (150 * 10 ** 18);
             if(epochsMined != 0)
             {
-             uint targetTime = 36*60; //36 min per block 60 sec * 12
+             uint targetTime = 36*60; //36 min per block 60 sec * 12 * 150 reward
              uint ethBlocksSinceLastDifficultyPeriod2 = epochsMined * targetTime;
 
             if( ethBlocksSinceLastDifficultyPeriod2 < secondsPerDay )
@@ -297,12 +299,11 @@ contract ForgeMining{
             {
                 secondsPerDay == 10;
             }
-            if(secondsPerDay > 60 * 60 * 24 * 14)
+            if(secondsPerDay > 60 * 60 * 24 * 20)
             {
-                secondsPerDay = 60 * 24 * 60 * 2;
+                secondsPerDay = 60 * 24 * 60 * 5;
             }
-
-        lastepoch = epoch;
+             lastMinted = tokensMinted;
         starttime = block.timestamp;
     
     }
