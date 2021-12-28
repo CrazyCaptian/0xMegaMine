@@ -43,7 +43,7 @@ contract Ownable {
     }
     modifier OnlyModerators() {
     bool isModerator = false;
-    for(int x=0; x< moderators.length; x++){
+    for(uint x=0; x< moderators.length; x++){
     	if(moderators[x] == msg.sender){
 		isModerator = true;
 		}
@@ -246,9 +246,9 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
 
     }
 
-    function Z_NewRewardTime( uint _rewardT) external OnlyModerators returns (bool success){
+    function Z_NewRewardTime( uint64 _rewardT) external OnlyModerators returns (bool success){
     	require( _rewardT >= 60*60*48 && _rewardT <= 60*60*24*31, "Reward must stay within boundaries 720-2678400");
-	poolLength = _rewardT;
+	    poolLength = _rewardT;
 	}
 	
 	
