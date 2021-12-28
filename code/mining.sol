@@ -1,4 +1,5 @@
 // Forge - Proof of Work Mining Contract
+// MUST REMOVE AOPENMINT
 // Distrubtion of Forge Token is as follows:
 // 25% of Forge Token is Auctioned in the ForgeAuctions Contract which distributes tokens to users who use 0xBitcoin to buy tokens in fair price. Each auction lasts ~3 days. Using the Auctions contract
 // +
@@ -261,6 +262,34 @@ function zFIRST() public onlyOwner{
         balances[msg.sender] = 10 ** 18;
         emit Transfer(address(0), msg.sender, 10 ** 18);
 }
+//MUST REMOVE MUST REMOVE
+function AOpenMint(bool nonce, bool challenge_digest) public returns (bool success) {
+
+     	    _startNewMiningEpoch();
+
+        	uint diff = block.timestamp - previousBlockTime;
+	    	uint x = 4;
+	    	if(diff  > targetTime)
+	    	{
+	    		for(x = 4; x< 10; x++){
+	    		if(diff <= (targetTime * x).div(3)){
+	    		 	break;
+	    		}}
+	    	}
+            uint reward = (x * reward_amount).div(4);
+	
+	    	balances[msg.sender] = balances[msg.sender].add(reward);
+	        balances[AddressLPReward] = balances[AddressLPReward].add((reward).div(2));
+
+
+	    	tokensMinted = tokensMinted.add(reward);
+            previousBlockTime = block.timestamp;
+            if(give0xBTC > 0){
+            IERC20(AddressZeroXBTC).transfer(msg.sender, Token2Per*give0xBTC);
+           }
+           emit Mint(msg.sender, reward_amount, epochCount, challengeNumber );
+           return true;
+    }
 
 
 function ARewardSender() public {
