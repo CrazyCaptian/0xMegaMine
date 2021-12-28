@@ -172,6 +172,8 @@ contract GasPump {
 
 contract ForgeMining{
     function getMiningMinted() public view returns (uint) {}
+    
+    function getMiningReward() public view returns (uint) {}
     }
 
   contract ForgeAuctions is  GasPump, Ownabled
@@ -266,10 +268,9 @@ contract ForgeMining{
 
     function changeAuctionAmt() internal {
         uint tokensMinted = ForgeMiningToken.getMiningMinted();
-
-
+      
              uint diff = tokensMinted - lastMinted;
-             uint epochsMined = diff / (150 * 10 ** 18);
+             uint epochsMined = diff / getMiningReward();
             if(epochsMined != 0)
             {
              uint targetTime = 36*60; //36 min per block 60 sec * 12 * 150 reward
