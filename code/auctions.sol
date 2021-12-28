@@ -170,7 +170,7 @@ contract GasPump {
     }
 }
 
-contract ForgeMining{
+contract ForgeMiningCT{
     function getMiningMinted() public view returns (uint) {}
     
     function getMiningReward() public view returns (uint) {}
@@ -214,7 +214,7 @@ contract ForgeMining{
     mapping(address=>uint) public ZmapMember_EraClaimedTo;      // Era,Days,Member->Units
     mapping(address=>uint) public ZmapMember_DayClaimedTo; 
     
-    ForgeMining ForgeMiningToken;
+    ForgeMiningCT ForgeMiningToken;
     // Events
         event SetExtraGas(uint256 _prev, uint256 _new);
     event NewEra(uint era, uint emission, uint totalBurnt);
@@ -259,7 +259,7 @@ contract ForgeMining{
         owner22 = address(0);
         lastMinted =  0;
         AddressZeroXBTC = _ZeroXBTCAddress;
-        ForgeMiningToken = ForgeMining(token);
+        ForgeMiningToken = ForgeMiningCT(token);
         lastMinted = ForgeMiningToken.getMiningMinted();
         starttime = block.timestamp;
 
