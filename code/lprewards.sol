@@ -228,13 +228,15 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
 
     }
 
-    function Z_addNewToken(IERC20 tokenExtra) external onlyOwner returns (bool success){
+    function Z_addNewToken(IERC20 tokenExtra, uint _decimalsExtra) external onlyOwner returns (bool success){
+	decimalsExtra = _decimalsExtra;
         rewardRateExtra = 0;
         rewardTokenExtra = tokenExtra;
         return true;
     }
 
-    function Z_addNewToken2(IERC20 tokenTWOExtra) external onlyOwner returns (bool success){
+    function Z_addNewToken2(IERC20 tokenTWOExtra, uint _decimalsExtraExtra) external onlyOwner returns (bool success){
+	decimalsExtraExtra = _decimalsExtraExtra;
         rewardRateExtraExtra = 0;
         rewardTokenExtraExtra = tokenTWOExtra;
         return true;
