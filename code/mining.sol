@@ -82,7 +82,7 @@ library IsContract {
 
 // File: contracts/utils/SafeMath.sol
 
-library SafeMath {
+library SafeMath2 {
     function add(uint256 x, uint256 y) internal pure returns (uint256) {
         uint256 z = x + y;
         require(z >= x, "Add overflow");
@@ -122,7 +122,7 @@ library SafeMath {
 
 // File: contracts/utils/Math.sol
 
-library ExtendedMath {
+library ExtendedMath2 {
 
 
     //return the smaller of the two inputs (a or b)
@@ -169,8 +169,8 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     address public AddressLPReward;
     address public AddressZeroXBTC;
 //Events
-    using SafeMath for uint256;
-    using ExtendedMath for uint;
+    using SafeMath2 for uint256;
+    using ExtendedMath2 for uint;
     event Mint(address indexed from, uint reward_amount, uint epochCount, bytes32 newChallengeNumber);
     event MegaMint(address indexed from, uint reward_amount, uint epochCount, bytes32 newChallengeNumber, uint NumberOfTokensMinted);
 
