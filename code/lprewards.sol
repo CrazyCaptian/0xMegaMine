@@ -24,7 +24,7 @@ pragma solidity ^0.8.7;
  * the owner.
  */
  
-contract Ownable {
+contract Ownable2 {
     address public owner;
     address [] public moderators;
 
@@ -149,7 +149,7 @@ contract StakedTokenWrapper {
     }
 }
 
-contract ForgeRewards is StakedTokenWrapper, Ownable {
+contract ForgeRewards is StakedTokenWrapper, Ownable2 {
     uint256 public decimalsExtra=18;
     uint256 public decimalsExtraExtra=18;
     uint64 public poolLength = 90; //60 * 60 * 24 * 7; //3 Day reward periods
@@ -584,7 +584,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply -= totalSupply;
             if(maxRewardSupply > duration)
             {
-                rewardRateExtra = ((maxRewardSupply*4)/10)/duration;
+                rewardRateExtraExtra = ((maxRewardSupply*4)/10)/duration;
             }
             else{
                 rewardRateExtraExtra = 0;
@@ -693,7 +693,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply2 -= totalSupply;
             if(maxRewardSupply2 > reward)
             {
-                rewardRate = ((maxRewardSupply2*4)/10)/duration;
+                rewardRate2 = ((maxRewardSupply2*4)/10)/duration;
             }
             else{
                 rewardRate2 = 0;
