@@ -264,7 +264,7 @@ contract ForgeMining{
     }
 
 
-    function changeAuctionTime() internal {
+    function changeAuctionAmt() internal {
         uint tokensMinted = ForgeMiningToken.getMiningMinted();
 
 
@@ -283,14 +283,14 @@ contract ForgeMining{
           // If there were 5% more blocks mined than expected then this is 5.  If there were 100% more blocks mined than expected then this is 100.
 
           //make it harder
-                  secondsPerDay = secondsPerDay.add(secondsPerDay.mult(excess_block_pct_extra).div(2000));   //by up to 50 %
+                  emission = emission.add(emission.mult(excess_block_pct_extra).div(2000));   //by up to 50 %
              }else{
                  uint shortage_block_pct = (ethBlocksSinceLastDifficultyPeriod2.mult(100)).div( secondsPerDay );
 
                  uint shortage_block_pct_extra = shortage_block_pct.sub(100).limitLessThan(1000); //always between 0 and 1000
 
                  //make it easier
-                secondsPerDay = secondsPerDay.sub(secondsPerDay.mult(shortage_block_pct_extra).div(2000));   //by up to 50 %
+                emission = emission.sub(emission.mult(shortage_block_pct_extra).div(2000));   //by up to 50 %
             }
             }else{
                 secondsPerDay = secondsPerDay * 2;
@@ -580,7 +580,7 @@ good settings _percent=5, startdig=0, maxdig=10000(doesnt hurt if too big), spot
                 mapEra_Emission[currentEra] = emission;                                     // Map emission to Era
                 emit NewEra(currentEra, emission, totalBurnt); 
             }
-            changeAuctionTime();
+            changeAuctionAmt();
             currentDay += 1;                                                                // Increment Day
             nextDayTime = _now + secondsPerDay;                                             // Set next Day time
             emission = getDayEmission();                                                    // Check daily Dmission
