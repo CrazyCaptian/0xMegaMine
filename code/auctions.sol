@@ -403,7 +403,7 @@ good settings _percent=5, startdig=0, maxdig=10000(doesnt hurt if too big), spot
         stricttotal = stricttotal.add(dayamt);
          _recordBurn(msg.sender, _member, _era, fdays[x], dayamt);
     }
-        require((stricttotal/fdays.length) >  (one0xBTCUnit/((2 ** _era) * 1000)), "0.001 0xBitcoin per Day required, reduces every era");
+        require((stricttotal/fdays.length) >  (one0xBTCUnit/((2 ** _era) * 50)), "0.02 0xBitcoin per Day required, reduces every era");
         require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, stricttotal), "NO OTHER WAY, send it the required 0xBitcoin");
         emit BurnMultipleDays(msg.sender, _member, _era, fdays.length, stricttotal);
         return true;
