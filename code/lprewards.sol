@@ -490,7 +490,10 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 userRewardsExtra[msg.sender].rewardsExtra = 0;
                 require(rewardTokenExtra.transfer(msg.sender, rewardExtra), "reward transfer failed");
                totalRewardedExtra = totalRewardedExtra - rewardExtra;
+	       
         }
+	
+            emit RewardPaidExtra(msg.sender, rewardExtra);
 
         }
         else if(choice == 5)
@@ -503,7 +506,9 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                    userRewardsExtraExtra[msg.sender].rewardsExtraExtra = 0;
                    require(rewardTokenExtraExtra.transfer(msg.sender, rewardExtraExtra), "reward token 2 transfer failed");
                    totalRewardedExtra = totalRewardedExtraExtra - rewardExtraExtra;
+		   
               }
+            emit RewardPaidExtraExtra(msg.sender, rewardExtraExtra);
         }
         emit RewardPaidBasic(msg.sender, reward, reward2);
     }
@@ -536,6 +541,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             userRewardsExtra[msg.sender].rewardsExtra = 0;
             require(rewardTokenExtra.transfer(msg.sender, rewardExtra), "reward transfer failed");
             totalRewardedExtra = totalRewardedExtra - rewardExtra;
+	    
         }
         
         uint256 rewardExtraExtra = earnedExtraExtra(msg.sender);
