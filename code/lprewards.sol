@@ -307,7 +307,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
         }
     }
 
-
+//1e8 for 0xBTC
     function rewardPerToken2() public view returns (uint128) {
         uint256 totalStakedSupply = totalSupply;
         if (totalStakedSupply == 0) {
@@ -315,7 +315,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
         }
         unchecked {
             uint256 rewardDuration2 = lastTimeRewardApplicable2()-lastUpdateTime2;
-            return uint128(rewardPerTokenStored2 + rewardDuration2*rewardRate2*1e18/totalStakedSupply);
+            return uint128(rewardPerTokenStored2 + rewardDuration2*rewardRate2*1e8/totalStakedSupply);
         }
     }
 
@@ -378,6 +378,7 @@ contract ForgeRewards is StakedTokenWrapper, Ownable {
         }
     }
 
+//1e8 for 0xBTC
     function earned2(address account) public view returns (uint128) {
         unchecked { 
             return uint128(balanceOf(account)*(rewardPerToken2()-userRewards2[account].userRewardPerTokenPaid2)/1e8 + userRewards2[account].rewards2);
