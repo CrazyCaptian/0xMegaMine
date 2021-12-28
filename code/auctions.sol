@@ -301,9 +301,9 @@ contract ForgeMining{
             {
                 secondsPerDay == 10;
             }
-            if(secondsPerDay > 60 * 60 * 24 * 20)
+            if(secondsPerDay > 60 * 60 * 24 * 21)
             {
-                secondsPerDay = 60 * 24 * 60 * 5;
+                secondsPerDay = 60 * 24 * 60 * 7;
             }
              lastMinted = tokensMinted;
         starttime = block.timestamp;
