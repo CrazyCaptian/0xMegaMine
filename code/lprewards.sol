@@ -589,7 +589,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             else{
                 rewardRateExtraExtra = 0;
             }
-            reward = maxRewardSupply;
+            reward = maxRewardSupply/2;
 
             lastUpdateTimeExtraExtra = blockTimestamp;
             periodFinishExtraExtra = blockTimestamp+duration;
@@ -619,7 +619,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             else{
                 rewardRateExtra = 0;
             }
-            reward = maxRewardSupply;
+            reward = maxRewardSupply/2;
 
             lastUpdateTimeExtra = blockTimestamp;
             periodFinishExtra = blockTimestamp+duration;
@@ -632,7 +632,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
 
 
 
-    function Z_setRewardParamsALL(uint choice) external {
+    function setRewardParamsALL(uint choice) external {
 
             this.Z_setRewardParamsForge(2, 22);
             this.Z_setRewardParams0xBTC(2, 22);
@@ -671,7 +671,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 rewardRate = 0;
             }
             
-            reward = maxRewardSupply;
+            reward = maxRewardSupply/2;
             lastUpdateTime = blockTimestamp;
             periodFinish = blockTimestamp+duration;
             totalRewarded = reward + totalRewarded;
@@ -693,12 +693,12 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 maxRewardSupply2 -= totalSupply;
             if(maxRewardSupply2 > reward)
             {
-                rewardRate2 = (maxRewardSupply2/2)/reward;
+                rewardRate2 = (maxRewardSupply2/2)/duration;
             }
             else{
                 rewardRate2 = 0;
             }
-            reward = maxRewardSupply2;
+            reward = maxRewardSupply2/2;
             lastUpdateTime2 = blockTimestamp;
             periodFinish2 = blockTimestamp+duration;
             totalRewarded2 = reward + totalRewarded2;
@@ -728,7 +728,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             else{
                 rewardRate3 = 0;
             }
-            reward = maxRewardSupply3;
+            reward = maxRewardSupply3/2;
             lastUpdateTime3 = blockTimestamp;
             periodFinish3 = blockTimestamp+duration;
             totalRewarded3 = reward + totalRewarded3;
