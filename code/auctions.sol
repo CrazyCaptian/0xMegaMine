@@ -310,59 +310,7 @@ contract ForgeMining{
     
     }
 
-    //==================================AUCTIONEER======================================//
 
-    // Calls when sending Fantom
-
-
-/*
-    receive() external payable {
-        burnFANTOMForMember(msg.sender);
-    }
-    */
-
-    //fuction to get all the days bidders and attempt to cash them out
-
-
-/*
-function WIthdrawls for a previous day, all holders with over _percent starting at spot startdig(usually 0), and maxdig incase list grows large, Spots are the number to payout
-good settings _percent=5, startdig=0, maxdig=10000(doesnt hurt if too big), spots=20, _percent=100% (meaning anyone with 1% of the pot gets rewards)
-
-
-
-
-    function superEZBid(uint256 total) public returns (bool success)
-    {
-        uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
-        require(easyBid(total, daysleft));
-    }
-
-
-
-    function easyBid(uint256 total, uint256 _days) public returns (bool success) {
-
-    
-        require(futurebidder(msg.sender, currentEra, currentDay, _days, total));
-        return true;
-
-    }
-
-    function futurebidder(address member, uint256 era, uint256 startingday, uint256 daystobid, uint256 amtTotal) public returns (bool success)
-    {
-        require((startingday + daystobid) < daysPerEra, "WE ONLY HAVE SO MANY DAYS");
-        require(startingday >= currentDay, "Must not bid behind the days");
-        require(era >= currentEra, "no knucklehead");
-        require((amtTotal/daystobid) > (one0xBTCUnit/(era)/3), "0.333 0xBitcoin per Day required, sendmore");
-        require(IERC20(ZeroXBTCAddress).transferFrom(msg.sender, burnAddress, amtTotal), "NO WAY");
-        uint256 amt = amtTotal/daystobid;
-        for(uint256 x=startingday; x< (startingday + daystobid); x++)
-        {
-            _recordBurn(msg.sender, member, era, x, amt);          
-        }
-        return true;
-    }
-
-*/
     function WholeEraBurn0xBTCForMember(address member, uint256 _0xbtcAmountTotal) public payable returns (bool success)
     {
         uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
