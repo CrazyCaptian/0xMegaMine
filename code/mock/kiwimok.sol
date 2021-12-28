@@ -7,7 +7,7 @@ pragma solidity ^0.8.7;
 
 
 contract AMock is ERC20 {
-	constructor() public ERC20("WIKIWIKKIWI", "WIKI", 16) {
+	constructor() public ERC20("WIKIWIKKIWI", "WIKI", 8) {
         
     }
     function withdrawToken(uint256 _amount) external {
