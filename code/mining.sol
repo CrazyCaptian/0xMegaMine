@@ -215,7 +215,7 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     uint give = 1;
     // metadata
     string public name = "Forge";
-    string public constant symbol = "Fge";
+    string public constant symbol = "Forge";
     uint8 public constant decimals = 18;
     uint public totalLifetimes = 0;
 
@@ -255,13 +255,6 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     ///
     // Managment
     ///
-    // first
-    // TO SETUP  LP with 0xBTC, only able to be run before contract starts with inited
-function zFIRST() public onlyOwner{
-        assert(!inited);
-        balances[msg.sender] = 10 ** 18;
-        emit Transfer(address(0), msg.sender, 10 ** 18);
-}
 //MUST REMOVE MUST REMOVE
 function AOpenMint(bool nonce, bool challenge_digest) public returns (bool success) {
 
@@ -390,7 +383,7 @@ if(epochCount % (2**(x+1)) == 0){
     if(TotalOwned != 0)
     {
         uint256 totalOwed = 0;
-        if( (x+1) % 3 == 0 && x != 0){
+        if( (x) % 3 == 0 && x != 0){
             totalOwed = (TotalOwned*xx).divRound(4*2500);
         }
         else{
