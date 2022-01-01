@@ -444,7 +444,7 @@ function _startNewMiningEpoch() internal {
 
     if((epochCount % _BLOCKS_PER_READJUSTMENT== 0))
     {
-         if(( IERC20(AddressZeroXBTC).balanceOf(address(this)) / Token2Per) <= 10000) //chosen to give keep 125 days payouts in reserve at current payout
+         if(( IERC20(AddressZeroXBTC).balanceOf(address(this)) / Token2Per) <= 20000) //chosen to give keep 250 days payouts in reserve at current payout
          {
              if(Token2Per.div(2) > Token2Min)
              {
