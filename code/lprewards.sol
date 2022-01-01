@@ -164,7 +164,6 @@ contract ForgeRewards is StakedTokenWrapper, Ownable2 {
     IERC20 public rewardToken2;
     IERC20 public rewardToken;
     uint256 public Era = 0;
-    uint256 public nextEra;
     uint256 public rewardRate;
     uint256 public rewardRate2;
     uint256 public rewardRate3;
