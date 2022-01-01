@@ -315,6 +315,7 @@ contract ForgeMiningCT{
     {
         uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
         FutureBurn0xBTCEasier(currentEra, currentDay, daysleft, member, _0xbtcAmountTotal);
+        return true;
     }
 
     function FutureBurn0xBTCEasier(uint _era, uint startingday, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public returns (bool success)
@@ -358,13 +359,13 @@ contract ForgeMiningCT{
         return true;
     }
 
-    function burn0xBTCForMember(address member, uint256 _0xbtcAmount) public  {
+    function burn0xBTCForMember(address member, uint256 _0xbtcAmount) public returns (bool success) {
         require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, _0xbtcAmount), "NO WAY, requires 0xBTC send");
 
 
         _recordBurn(msg.sender, member, currentEra, currentDay, _0xbtcAmount);
         emit Burn(msg.sender, member, currentEra, currentDay, _0xbtcAmount, mapEraDay_Units[currentEra][currentDay]);
-            
+        return true;
 }
     
     
@@ -427,7 +428,7 @@ contract ForgeMiningCT{
     }
 
 
-    function WithdrawEz(address _member) public
+    function WithdrawEz(address _member)
     {
         uint startingday = ZmapMember_DayClaimedTo[_member];
         uint startingera = ZmapMember_EraClaimedTo[_member];
