@@ -311,13 +311,13 @@ contract ForgeMiningCT{
     }
 
 
-    function WholeEraBurn0xBTCForMember(address member, uint256 _0xbtcAmountTotal) public payable returns (bool success)
+    function WholeEraBurn0xBTCForMember(address member, uint256 _0xbtcAmountTotal) public returns (bool success)
     {
         uint256 daysleft = daysPerEra - currentDay - 1 ;//just incase
         FutureBurn0xBTCEasier(currentEra, currentDay, daysleft, member, _0xbtcAmountTotal);
     }
 
-    function FutureBurn0xBTCEasier(uint _era, uint startingday, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public payable returns (bool success)
+    function FutureBurn0xBTCEasier(uint _era, uint startingday, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public returns (bool success)
     {
         uint[] memory dd = new uint[](totalNumberrOfDays); 
         uint[] memory amt = new uint[](totalNumberrOfDays);
@@ -334,7 +334,7 @@ contract ForgeMiningCT{
         return true;
     }
 
-    function FutureBurn0xBTCArrays(uint _era, uint[] memory fdays, address _member, uint[] memory _0xbtcAmount) public payable returns (bool success)
+    function FutureBurn0xBTCArrays(uint _era, uint[] memory fdays, address _member, uint[] memory _0xbtcAmount) public returns (bool success)
     {
         uint256 stricttotal =0;
         uint256 _daysPerEra=daysPerEra;
@@ -358,7 +358,7 @@ contract ForgeMiningCT{
         return true;
     }
 
-    function burn0xBTCForMember(address member, uint256 _0xbtcAmount) public payable  {
+    function burn0xBTCForMember(address member, uint256 _0xbtcAmount) public  {
         require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, _0xbtcAmount), "NO WAY, requires 0xBTC send");
 
 
