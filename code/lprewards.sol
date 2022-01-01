@@ -152,7 +152,7 @@ contract StakedTokenWrapper {
 contract ForgeRewards is StakedTokenWrapper, Ownable2 {
     uint256 public decimalsExtra=18;
     uint256 public decimalsExtraExtra=18;
-    uint64 public poolLength = 90; //60 * 60 * 24 * 7; //3 Day reward periods
+    uint64 public poolLength = 90; //60 * 60 * 24 * 7; //7 Day reward periods
     uint256 public totalRewarded;
     uint256 public totalRewarded2;
     uint256 public totalRewarded3;
@@ -163,7 +163,6 @@ contract ForgeRewards is StakedTokenWrapper, Ownable2 {
     IERC20 public rewardTokenExtra;
     IERC20 public rewardToken2;
     IERC20 public rewardToken;
-    uint256 public Era = 0;
     uint256 public rewardRate;
     uint256 public rewardRate2;
     uint256 public rewardRate3;
@@ -656,7 +655,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             duration = poolLength;  // Updates every 14 days
             rewardPerTokenStored = rewardPerToken();
             uint64 blockTimestamp = uint64(block.timestamp);
-            require(blockTimestamp > periodFinish, "MUST BE AFTER ERA");
+            require(blockTimestamp > periodFinish, "MUST BE AFTER Previous Distribution ");
             uint256 maxRewardSupply = rewardToken.balanceOf(address(this)) - totalRewarded;
             
             uint256 remaining = blockTimestamp - periodFinish;
@@ -684,7 +683,7 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
             duration = poolLength;  // Updates every 14 days
             rewardPerTokenStored2 = rewardPerToken2();
             uint64 blockTimestamp = uint64(block.timestamp);
-            require(blockTimestamp > periodFinish2, "MUST BE AFTER ERA");
+            require(blockTimestamp > periodFinish2, "MUST BE AFTER Previous Rewards");
             
             uint256 maxRewardSupply2 = rewardToken2.balanceOf(address(this)) - totalRewarded2;
             uint256 remaining = blockTimestamp - periodFinish2;
@@ -713,10 +712,9 @@ function getRewardBasicBasic(uint choice) public updateReward(msg.sender) {
                 unchecked {
             require(reward > 0);
             duration = poolLength;  // Updates every 14 days
-            Era += 1;
             rewardPerTokenStored3 = rewardPerToken3();
             uint64 blockTimestamp = uint64(block.timestamp);
-            require(blockTimestamp > periodFinish3, "MUST BE AFTER ERA");
+            require(blockTimestamp > periodFinish3, "MUST BE AFTER Previous Rewards");
             uint256 maxRewardSupply3 = address(this).balance - totalRewarded3;
             uint256 remaining = blockTimestamp - periodFinish3;
 
