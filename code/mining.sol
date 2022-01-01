@@ -230,7 +230,7 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     	rewardEra = 0;
 	tokensMinted = 0;
     	//bitcoin commands short and sweet //sets to previous difficulty
-    	miningTarget = _MAXIMUM_TARGET.div(1001); //5000000 = 31gh/s @ 7 min for FPGA mining, 2000000 if GPU only
+    	miningTarget = _MAXIMUM_TARGET.div(5000000); //5000000 = 31gh/s @ 7 min for FPGA mining
         //latestDifficultyPeriodStarted2 = block.timestamp;
     	
     	_startNewMiningEpoch();
