@@ -219,7 +219,7 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
     uint8 public constant decimals = 18;
     uint public totalLifetimes = 0;
 
-
+    uint public latestDifficultyPeriodStarted = block.number;
     bool inited = false;
     function zinit(address AuctionAddress2, address LPGuild2, address _ZeroXBTCAddress) public onlyOwner{
         uint x = 21000000000000000000000000 / (2* (2 ** totalLifetimes)); //half supply for LP Mine and Burn
@@ -228,9 +228,9 @@ contract ForgeMining is Ownable, IERC20, ApproveAndCallFallBack {
         inited = true;
 	
     	rewardEra = 0;
-	tokensMinted = 0;
+	    tokensMinted = 0;
     	//bitcoin commands short and sweet //sets to previous difficulty
-    	miningTarget = _MAXIMUM_TARGET.div(5000000); //5000000 = 31gh/s @ 7 min for FPGA mining
+    	miningTarget = _MAXIMUM_TARGET.div(100005); //5000000 = 31gh/s @ 7 min for FPGA mining
         //latestDifficultyPeriodStarted2 = block.timestamp;
     	
     	_startNewMiningEpoch();
@@ -336,8 +336,7 @@ function mintTo(uint256 nonce, bytes32 challenge_digest,  address mintTo) public
 	    	balances[mintTo] = balances[mintTo].add(reward);
 	        balances[AddressLPReward] = balances[AddressLPReward].add((reward).div(2));
 
-
-	    	tokensMinted = tokensMinted.add(reward);
+	    	tokensMinted = tokensMinted.add(reward.div(2) * 3);
             previousBlockTime = block.timestamp;
             if(give0xBTC > 0){
             IERC20(AddressZeroXBTC).transfer(mintTo, Token2Per*give0xBTC);
@@ -455,7 +454,6 @@ function _startNewMiningEpoch() internal {
          {
              Token2Per = Token2Per.mult(3);
          }
-         
         _reAdjustDifficulty();
     }
     }
@@ -470,7 +468,7 @@ function _startNewMiningEpoch() internal {
     //as of 2017 the bitcoin difficulty was up to 17 zeroes, it was only 8 in the early days
 
     function _reAdjustDifficulty() internal {
-
+        latestDifficultyPeriodStarted = block.number;
         uint256 blktimestamp = block.timestamp;
         uint ethBlocksSinceLastDifficultyPeriod2 = blktimestamp - latestDifficultyPeriodStarted2;
 
