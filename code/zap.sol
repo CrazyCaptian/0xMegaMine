@@ -1,15 +1,5 @@
-//  Forge Auctions Contract REMOIVE PAYABLE FROM AUCTIONS CONTRACT SINCE WE ONLY USE 0xBitcoin
-//   Auctions 8,192 tokens every 3 days and users are able to withdraw anytime after!
-
-//   Proceeds of auctions go back into the miners pockets, by going directly to the Proof of Work Contract!
-
-// 10,500,000 tokens are Auctioned off over 100 years in this contract! In the first era ~5,000,000 are auctioned and half every era after!
-
-//   Distributes 8,192 tokens every 3 days for the first era(5 years) and halves every era after
-
-// By using the burn0xBTCForMember function
-//       0xBitcoin Token is taken from the user and used to recieve your share of the 8,192 tokens auctioned every 3 days which varies with Forge epoch speeds!  
-
+//FORGE ZAPs
+//ZAP to Staking //Zap Out of Staking // Zap zap
 
 pragma solidity ^0.8.0;
 
@@ -180,10 +170,12 @@ contract GasPump {
         }
     }
 }
-
+contract SwapRouter {
+    function swapExactTokensForTokens(uint256, uint256, address[] memory, address, uint256) public returns (bool){}
+    }
 contract LiquidityPool{
+    function getReserves() public returns (uint112, uint112, uint32) {}
     function addLiquidity(address, address, uint256, uint256, uint256, uint256 , address, uint256 ) public returns (bool) {}
-    
     function getMiningReward() public view returns (uint) {}
     }
 contract ForgeAuctions{
@@ -194,14 +186,14 @@ contract ForgeAuctions{
     function burn0xBTCForMember(address, uint256) public payable  {}
     }
 contract ForgeStaking{
-    function getMiningMinted() public view returns (uint) {}
+    function stakeFor(address, uint128) public payable virtual {}
     
     function getMiningReward() public view returns (uint) {}
     }
 
   contract ForgeZap is  GasPump, OwnableAndMods
 {
-
+    
     using SafeMath for uint;
     using ExtendedMath for uint;
     address public AddressZeroXBTC;
@@ -230,10 +222,15 @@ contract ForgeStaking{
     uint public nextDayTime;
     uint public totalBurnt; uint public totalEmitted;
     // Public Mappings
-    
+    address ForgeTokenAddress;
+    address z0xBitcoinAddress;
+    address LPPool0xBTCForge;
+    SwapRouter Quickswap;
     ForgeAuctions Forge_Auction;
     ForgeStaking Forge_Staking;
-    LiquidityPool LP;
+    LiquidityPool LP1; //Forge/0xBTC
+    LiquidityPool LP2; //Forge/Polygon
+    LiquidityPool LP3; //0xBTC/Polygon
     // Events
         event Zap(uint256 ZeroXBitcoinAmount, uint256 ForgeAmount);
         event Burn(uint256 totalburn, address burnedFor, uint TotalDaysBurned);
@@ -271,10 +268,92 @@ contract ForgeStaking{
 
     }
 
-   function 
+    function FULLForge(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon, uint256 haircut, address whoToStakeFor) public returns (bool success) {
+        //haircut is what % we will loose in a trade if someone frontruns set at 97% in contract now change for public
+        uint112 _reserve0; // 0xBTC ex 2 in getReserves
+        uint112 _reserve1; // Forge
+        uint32 _blockTimestampLast;
+        address [] memory path;
+        uint256 deadline = block.timestamp + 10000;
+         (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
+
+         uint256 TotalForgeToRecieve = amountIn0xBTC / ( _reserve0 + amountIn0xBTC) * _reserve1;
+         TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
+         Quickswap.swapExactTokensForTokens(amountIn0xBTC, TotalForgeToRecieve, path, address(this), deadline); //swap to Forge
+
+         (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
+
+         TotalForgeToRecieve = amountInPolygon / ( _reserve0 + amountIn0xBTC) * _reserve1;
+         TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
+         Quickswap.swapExactTokensForTokens(amountIn0xBTC, TotalForgeToRecieve, path, address(this), deadline); //swap to Forge
+
+
+         uint256 totalForgein = IERC20(ForgeTokenAddress).balanceOf(address(this)) + amountInForge;
+         uint256 HalfForge = totalForgein / 2;
+
+
+
+        //get 50% 0xBTC now
+         (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
+
+        uint256 Total0xBTCToRecieve = HalfForge / ( _reserve0 + HalfForge) * _reserve1;
+
+        TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
+        Quickswap.swapExactTokensForTokens(HalfForge, Total0xBTCToRecieve, path, address(this), deadline); //swap to Forge
+        uint256 total0xBTCin = IERC20(ForgeTokenAddress).balanceOf(address(this));
+        //call LP
+        LP1.addLiquidity(ForgeAddress, z0xBitcoinAddress, HalfForge, total0xBTCin, HalfForge * 95 / 100,  (total0xBTCin*95) /100, address(this), block.timestamp + 1000);
+        uint256 LP_amount = IERC20(LPPool0xBTCForge).balanceOf(address(this));
+        uint128 bob = uint128(LP_amount);
+        Forge_Staking.stakeFor(whoToStakeFor, bob);
+
+    }
+
+
+
+
+    function FiftyFifty(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon) public returns (bool success) {
+        uint112 _reserve0; // 0xBTC ex 2 in getReserves
+        uint112 _reserve1; //Polygon ex .112 in reservers
+        uint112 _reserve2; // 5015019984855 Forge ex 2 in getReserves
+        uint112 _reserve3; //200001000 0xBitcoin
+
+        uint32 _blockTimestampLast;
+         (_reserve0, _reserve1, _blockTimestampLast) = LP1.getReserves(); //0xBTC/Polygon
+
+         (_reserve2, _reserve3, _blockTimestampLast) = LP2.getReserves(); //Forge/0xBTC
+
+        uint112 TrueR0PricePerReserve1 = _reserve1/ _reserve0; // 112798103094059603(Polygon).div(200000000)(0xbtc) = 563,990,515.470298015 / e10 = 0.056 Polygon per 2 0xBTC
+
+
+        uint112 TrueR2PricePerReserve2 = _reserve3/ _reserve2; //ex (5015019984855).div(200001000) = 25,074.97 / e10 = 0.00000250373 Forge per 2 0xBTC
+
+
+        //to know what users would recieve
+
+        //if(TrueR2PricePerReserve1 > TrueR2PricePerReserve2)
+
+
+
+
+         //Forge_Staking.stakeFor(forWhom, amount);
+         return true;
+    }
+
+
+    function stakeForZap(address forWhom, uint128 amount) public returns (bool success) {
+         Forge_Staking.stakeFor(forWhom, amount);
+         return true;
+    }
+    function SwapTokens(uint256 amountIn, uint256 amountOutMin, address[] memory path, address to, uint256 deadline) public returns (bool){
+        LiquidityPool LP = LP1;
+        //LP1.swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline);
+        return true;
+    }
 
     function GetLPTokens(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) public payable returns (bool success)
     {
+        LiquidityPool LP = LP1;
         LP.addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline);
         return true;
     }
