@@ -172,6 +172,7 @@ contract GasPump {
 }
 contract SwapRouter {
     function swapExactTokensForTokens(uint256, uint256, address[] memory, address, uint256) public returns (bool){}
+    function swapExactETHForTokens(uint256, address[] memory, address, uint256) public payable returns (bool){}
     }
 contract LiquidityPool{
     function getReserves() public returns (uint112, uint112, uint32) {}
@@ -268,7 +269,7 @@ contract ForgeStaking{
 
     }
 
-    function FULLForge(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon, uint256 haircut, address whoToStakeFor) public returns (bool success) {
+    function FULLForge(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon, uint256 haircut, address whoToStakeFor) public payable returns (bool success) {
         //haircut is what % we will loose in a trade if someone frontruns set at 97% in contract now change for public
         uint112 _reserve0; // 0xBTC ex 2 in getReserves
         uint112 _reserve1; // Forge
@@ -279,15 +280,16 @@ contract ForgeStaking{
 
          uint256 TotalForgeToRecieve = amountIn0xBTC / ( _reserve0 + amountIn0xBTC) * _reserve1;
          TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
-         Quickswap.swapExactTokensForTokens(amountIn0xBTC, TotalForgeToRecieve, path, address(this), deadline); //swap to Forge
+         Quickswap.swapExactTokensForTokens(amountIn0xBTC, TotalForgeToRecieve, path, address(this), deadline); //swap to Forge from 0xBTC
+
+
 
          (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
 
          TotalForgeToRecieve = amountInPolygon / ( _reserve0 + amountIn0xBTC) * _reserve1;
          TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
-         Quickswap.swapExactTokensForTokens(amountIn0xBTC, TotalForgeToRecieve, path, address(this), deadline); //swap to Forge
-
-
+     //    Quickswap.swapExactETHForTokens(TotalForgeToRecieve, path,  address(this), deadline{value: web3.toWei(msg.value, 'ether')}); // Swap to Forge from Polygon
+        Quickswap.swapExactETHForTokens{value: msg.value}(TotalForgeToRecieve, path,  address(this), deadline);
          uint256 totalForgein = IERC20(ForgeTokenAddress).balanceOf(address(this)) + amountInForge;
          uint256 HalfForge = totalForgein / 2;
 
