@@ -268,6 +268,21 @@ contract ForgeStaking{
         starttime = block.timestamp;
 
     }
+    function FullETH(uint256 amountInForge, uint256 haircut, address whoToStakeFor) returns (bool success){ payable function
+    
+        uint112 _reserve0; // 0xBTC ex 2 in getReserves
+        uint112 _reserve1; // Forge;
+        address [] memory path;
+    
+
+         (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
+
+         TotalForgeToRecieve = amountInPolygon / ( _reserve0 + amountIn0xBTC) * _reserve1;
+         TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
+     //    Quickswap.swapExactETHForTokens(TotalForgeToRecieve, path,  address(this), deadline{value: web3.toWei(msg.value, 'ether')}); // Swap to Forge from Polygon
+        Quickswap.swapExactETHForTokens{value: msg.value}(TotalForgeToRecieve, path,  address(this), block.timestamp + 10000);
+	return true;
+	}
 
     function FULLForge(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon, uint256 haircut, address whoToStakeFor) public payable returns (bool success) {
 
