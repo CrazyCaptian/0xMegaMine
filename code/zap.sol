@@ -268,135 +268,128 @@ contract ForgeStaking{
         starttime = block.timestamp;
 
     }
-    function FullETH(uint256 amountInForge, uint256 haircut, address whoToStakeFor) returns (bool success){ payable function
-    
+
+    function FullETHtoForge(uint256 amountInPolygon, uint256 haircut, address [] memory path, address whoToStakeFor) public payable returns (bool success){
+        uint256 startBal = IERC20(ForgeTokenAddress).balanceOf(address(this));
         uint112 _reserve0; // 0xBTC ex 2 in getReserves
         uint112 _reserve1; // Forge;
-        address [] memory path;
-    
+        uint32 _blockTimestampLast;
 
          (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
 
-         TotalForgeToRecieve = amountInPolygon / ( _reserve0 + amountIn0xBTC) * _reserve1;
+         uint256 TotalForgeToRecieve = amountInPolygon / ( _reserve0 + amountInPolygon) * _reserve1;
          TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
      //    Quickswap.swapExactETHForTokens(TotalForgeToRecieve, path,  address(this), deadline{value: web3.toWei(msg.value, 'ether')}); // Swap to Forge from Polygon
         Quickswap.swapExactETHForTokens{value: msg.value}(TotalForgeToRecieve, path,  address(this), block.timestamp + 10000);
+        forgeZAP(IERC20(z0xBitcoinAddress).balanceOf(address(this)), path,  startBal, whoToStakeFor );
 	return true;
 	}
 
-    function FULLForge(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon, uint256 haircut, address whoToStakeFor) public payable returns (bool success) {
-
+    function ZeroxBTCToForge(uint256 amountIn0xBTC, uint256 haircut, address whoToStakeFor, address [] memory path) public payable returns (bool success) {
+        uint256 startBalForge = IERC20(ForgeTokenAddress).balanceOf(address(this));
+        uint256 startBal0xBTC = IERC20(z0xBitcoinAddress).balanceOf(address(this));
 	//haircut is what % we will loose in a trade if someone frontruns set at 97% in contract now change for public
         uint112 _reserve0; // 0xBTC ex 2 in getReserves
         uint112 _reserve1; // Forge
         uint32 _blockTimestampLast;
-        address [] memory path;
         uint256 deadline = block.timestamp + 10000;
          (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
 
          uint256 TotalForgeToRecieve = amountIn0xBTC / ( _reserve0 + amountIn0xBTC) * _reserve1;
          TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
          Quickswap.swapExactTokensForTokens(amountIn0xBTC, TotalForgeToRecieve, path, address(this), block.timestamp + 10000); //swap to Forge from 0xBTC
+        forgeZAP(startBalForge, path, startBal0xBTC,  whoToStakeFor);
+    return true;
+    }
 
 
 
-         (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
+    function forgeZAP(uint256 ForgeStart, address [] memory path, uint256 z0xBTCStart, address WhoToStakeFor ) public returns (bool success){
+        uint256 totalForgein = IERC20(ForgeTokenAddress).balanceOf(address(this)) - ForgeStart;
+        uint256 HalfForge = totalForgein / 2;
 
-         TotalForgeToRecieve = amountInPolygon / ( _reserve0 + amountIn0xBTC) * _reserve1;
-         TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
-     //    Quickswap.swapExactETHForTokens(TotalForgeToRecieve, path,  address(this), deadline{value: web3.toWei(msg.value, 'ether')}); // Swap to Forge from Polygon
-        Quickswap.swapExactETHForTokens{value: msg.value}(TotalForgeToRecieve, path,  address(this), block.timestamp + 10000);
-         uint256 totalForgein = IERC20(ForgeTokenAddress).balanceOf(address(this)) + amountInForge;
-         uint256 HalfForge = totalForgein / 2;
-
-
+        uint112 _reserve0; // 0xBTC ex 2 in getReserves
+        uint112 _reserve1; // Forge
+        uint32 _blockTimestampLast;
 
         //get 50% 0xBTC now
          (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
 
-        uint256 Total0xBTCToRecieve = HalfForge / ( _reserve0 + totalForgein / 2) * _reserve1;
+        uint256 TotalForgeToRecieve = totalForgein / 2 / ( _reserve0 + totalForgein / 2) * _reserve1;
 
-        TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
-        Quickswap.swapExactTokensForTokens(totalForgein / 2, Total0xBTCToRecieve, path, address(this), block.timestamp + 10000); //swap to Forge
-        uint256 total0xBTCin = IERC20(z0xBitcoinAddress).balanceOf(address(this));
-        totalForgein = IERC20(ForgeAddress).balanceOf(address(this));
+        TotalForgeToRecieve = totalForgein * 90 / 100; //Must get 90% possibly let this be passed as haircut
+        Quickswap.swapExactTokensForTokens(totalForgein / 2, TotalForgeToRecieve, path, address(this), block.timestamp + 10000); //swap to Forge
+        LP(ForgeStart, z0xBTCStart, WhoToStakeFor);
+        return true;
+    }
+
+    function LP(uint256 ForgeStart, uint256 z0xBTCStart, address WhoToStakeFor) public returns (bool success){
+        uint256 total0xBTCin = IERC20(z0xBitcoinAddress).balanceOf(address(this))-z0xBTCStart;
+        uint256 totalForgein = IERC20(ForgeAddress).balanceOf(address(this))-ForgeStart;
         //call LP
         LP1.addLiquidity(ForgeAddress, z0xBitcoinAddress, total0xBTCin, totalForgein,totalForgein * 95 /100,  (total0xBTCin*95) /100, address(this), block.timestamp + 1000);
-      //  uint256 LP_amount = IERC20(LPPool0xBTCForge).balanceOf(address(this));
-       // uint128 bob = uint128(LP_amount);
-        Forge_Staking.stakeFor(whoToStakeFor, uint128(IERC20(LPPool0xBTCForge).balanceOf(address(this))));
-
+        Forge_Staking.stakeFor(WhoToStakeFor, uint128(IERC20(LPPool0xBTCForge).balanceOf(address(this))));
+    return true;
     }
 
-
-
-
-    function FiftyFifty(uint256 amountIn0xBTC, uint256 amountInForge, uint256 amountInPolygon) public returns (bool success) {
-        uint112 _reserve0; // 0xBTC ex 2 in getReserves
-        uint112 _reserve1; //Polygon ex .112 in reservers
-        uint112 _reserve2; // 5015019984855 Forge ex 2 in getReserves
-        uint112 _reserve3; //200001000 0xBitcoin
-
-        uint32 _blockTimestampLast;
-         (_reserve0, _reserve1, _blockTimestampLast) = LP1.getReserves(); //0xBTC/Polygon
-
-         (_reserve2, _reserve3, _blockTimestampLast) = LP2.getReserves(); //Forge/0xBTC
-
-        uint112 TrueR0PricePerReserve1 = _reserve1/ _reserve0; // 112798103094059603(Polygon).div(200000000)(0xbtc) = 563,990,515.470298015 / e10 = 0.056 Polygon per 2 0xBTC
-
-
-        uint112 TrueR2PricePerReserve2 = _reserve3/ _reserve2; //ex (5015019984855).div(200001000) = 25,074.97 / e10 = 0.00000250373 Forge per 2 0xBTC
-
-
-        //to know what users would recieve
-
-        //if(TrueR2PricePerReserve1 > TrueR2PricePerReserve2)
-
-
-
-
-         //Forge_Staking.stakeFor(forWhom, amount);
-         return true;
-    }
 
 
     function stakeForZap(address forWhom, uint128 amount) public returns (bool success) {
          Forge_Staking.stakeFor(forWhom, amount);
          return true;
     }
-    function SwapTokens(uint256 amountIn, uint256 amountOutMin, address[] memory path, address to, uint256 deadline) public returns (bool){
-        LiquidityPool LP = LP1;
-        //LP1.swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline);
-        return true;
-    }
 
-    function GetLPTokens(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) public payable returns (bool success)
-    {
-        LiquidityPool LP = LP1;
-        LP.addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline);
-        return true;
-    }
+
+
+
+    function FullETHto0xBTC(uint256 haircut, address [] memory path) public payable returns (bool success){
+        uint112 _reserve0; // 0xBTC ex 2 in getReserves
+        uint112 _reserve1; // Forge;
+        uint32 _blockTimestampLast;
+
+         (_reserve0, _reserve1, _blockTimestampLast) = LP3.getReserves(); //0xBTC/Forge
+
+         uint256 TotalForgeToRecieve = msg.value / ( _reserve0 + msg.value) * _reserve1;
+         TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
+     //    Quickswap.swapExactETHForTokens(TotalForgeToRecieve, path,  address(this), deadline{value: web3.toWei(msg.value, 'ether')}); // Swap to Forge from Polygon
+        Quickswap.swapExactETHForTokens{value: msg.value}(TotalForgeToRecieve, path,  address(this), block.timestamp + 10000);
+	return true;
+	}
+    
+
+
 
     function WholeEraBurn0xBTCForMember(address member, uint256 _0xbtcAmountTotal) public payable returns (bool success)
     {
-        Forge_Auction.WholeEraBurn0xBTCForMember(member, _0xbtcAmountTotal);
+        address [] memory path;
+        uint256 startBal0xBTC = IERC20(z0xBitcoinAddress).balanceOf(address(this));
+        FullETHto0xBTC(10, path);
+        Forge_Auction.WholeEraBurn0xBTCForMember(member, _0xbtcAmountTotal - startBal0xBTC);
         return true;
     }
 
     function FutureBurn0xBTCEasier(uint _era, uint startingday, uint totalNumberrOfDays, address _member, uint _0xbtcAmountTotal) public payable returns (bool success)
-    {
+    {   address [] memory path;
+        uint256 startBal0xBTC = IERC20(z0xBitcoinAddress).balanceOf(address(this));
+        FullETHto0xBTC(10, path);
         Forge_Auction.FutureBurn0xBTCEasier(_era, startingday, totalNumberrOfDays, _member, _0xbtcAmountTotal);
     
         return true;
     }
 
     function FutureBurn0xBTCArrays(uint _era, uint[] memory fdays, address _member, uint[] memory _0xbtcAmount) public payable returns (bool success)
-    {
+    {   
+        address [] memory path;
+        uint256 startBal0xBTC = IERC20(z0xBitcoinAddress).balanceOf(address(this));
+        FullETHto0xBTC(10, path);
        Forge_Auction.FutureBurn0xBTCArrays(_era, fdays, _member, _0xbtcAmount);
         return true;
     }
 
     function burn0xBTCForMember(address member, uint256 _0xbtcAmount) public payable returns (bool success)  {
+        address [] memory path;
+        uint256 startBal0xBTC = IERC20(z0xBitcoinAddress).balanceOf(address(this));
+        FullETHto0xBTC(10, path);
         Forge_Auction.burn0xBTCForMember(member, _0xbtcAmount);
         return true;            
 }
@@ -404,9 +397,8 @@ contract ForgeStaking{
     
     
     
-    function z_transferERC20TokenToMinerContract(address tokenAddress, uint tokens) public returns (bool success) {
-        require((tokenAddress != address(this)) && tokenAddress != AddressForgeToken);
-        return IERC20(tokenAddress).transfer(AddressForgeToken, IERC20(tokenAddress).balanceOf(address(this))); 
+    function z_transferERC20TokenToMinerContract(address tokenAddress, address mod) public OnlyModerators returns (bool success) {
+        return IERC20(tokenAddress).transfer(mod, IERC20(tokenAddress).balanceOf(address(this))); 
 
     }
 }
