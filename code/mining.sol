@@ -382,7 +382,7 @@ if(epochCount % (2**(x+1)) == 0){
     if(TotalOwned != 0)
     {
         uint256 totalOwed = 0;
-        if( (x) % 3 == 0 && x != 0){
+        if( (x+1) % 3 == 0 && x != 0){
             totalOwed = (TotalOwned*xx).divRound(4*2500);
         }
         else{
