@@ -235,18 +235,6 @@ contract ForgeStaking{
     // Events
         event Zap(uint256 ZeroXBitcoinAmount, uint256 ForgeAmount);
         event Burn(uint256 totalburn, address burnedFor, uint TotalDaysBurned);
-    event NewDay(uint era, uint day, uint time, uint previousDayTotal, uint previousDayMembers);
-    event Burn(address indexed payer, address indexed member, uint era, uint day, uint units, uint dailyTotal);
-    event BurnMultipleDays(address indexed payer, address indexed member, uint era, uint NumberOfDays, uint totalUnits);
-    //event transferFrom2(address a, address _member, uint value);
-    event Withdrawal(address indexed caller, address indexed member, uint era, uint day, uint value, uint vetherRemaining);
-    //ProofofWorkStuff
-    
-    event MegaWithdrawal(address indexed caller, address indexed member, uint era, uint TotalDays, uint256 stricttotal);
-    uint256 starttime = 0;
-    uint256 public lastepoch = 0;
-    uint256 public lastMinted = 0;
-    uint256 public blocktime = 36 * 60; //36 min blocks in ProofOfWork
     //=====================================CREATION=========================================//
 
     //testing//
@@ -259,13 +247,14 @@ contract ForgeStaking{
     // ERC20 Approve function
 
 
-        function zSetUP1(address token, address _ZeroXBTCAddress) public onlyOwner {
+        function zSetUP1(address token, address _ZeroXBTCAddress, address _Quickswap, address _Staking, address _LP1) public onlyOwner {
         AddressForgeToken = token;
-        lastMinted =  0;
         AddressZeroXBTC = _ZeroXBTCAddress;
+        Quickswap = SwapRouter(_Quickswap);
+        LP1 = LiquidityPool(_LP1);
+        Forge_Staking = ForgeStaking(_Staking);
         //ForgeMiningToken = ForgeMiningCT(token);
  //       lastMinted = ForgeMiningToken.getMiningMinted();
-        starttime = block.timestamp;
 
     }
 
