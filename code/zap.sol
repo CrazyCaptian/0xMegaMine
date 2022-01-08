@@ -281,7 +281,7 @@ contract ForgeStaking{
          TotalForgeToRecieve = TotalForgeToRecieve * 90 / 100; //Must get 90% possibly let this be passed as haircut
      //    Quickswap.swapExactETHForTokens(TotalForgeToRecieve, path,  address(this), deadline{value: web3.toWei(msg.value, 'ether')}); // Swap to Forge from Polygon
         Quickswap.swapExactETHForTokens{value: msg.value}(TotalForgeToRecieve, path,  address(this), block.timestamp + 10000);
-        forgeZAP(IERC20(z0xBitcoinAddress).balanceOf(address(this)), path,  startBal, whoToStakeFor );
+        forgeZAP(startBal, path,  IERC20(z0xBitcoinAddress).balanceOf(address(this)), whoToStakeFor );
 	return true;
 	}
 
