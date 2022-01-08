@@ -307,17 +307,18 @@ contract ForgeStaking{
         uint256 TotalForgeToRecieve = totalForgein / 2 / ( _reserve0 + totalForgein / 2) * _reserve1;
 
         TotalForgeToRecieve = totalForgein * 90 / 100; //Must get 90% possibly let this be passed as haircut
-        Quickswap.swapExactTokensForTokens(totalForgein / 2, TotalForgeToRecieve, path, address(this), block.timestamp + 10000); //swap to Forge
+        Quickswap.swapExactTokensForTokens(totalForgein / 2, TotalForgeToRecieve, path, address(this), block.timestamp + 10000); //swap to 0xBTC from Forge. Half of total forge
         LP(ForgeStart, z0xBTCStart, WhoToStakeFor);
         return true;
     }
 
     function LP(uint256 ForgeStart, uint256 z0xBTCStart, address WhoToStakeFor) public returns (bool success){
+    	uint256 prevBal = uint128(IERC20(LPPool0xBTCForge).balanceOf(address(this)))
         uint256 total0xBTCin = IERC20(z0xBitcoinAddress).balanceOf(address(this))-z0xBTCStart;
         uint256 totalForgein = IERC20(ForgeAddress).balanceOf(address(this))-ForgeStart;
         //call LP
         LP1.addLiquidity(ForgeAddress, z0xBitcoinAddress, total0xBTCin, totalForgein,  (total0xBTCin*95) /100, totalForgein * 95 /100, address(this), block.timestamp + 1000);
-        Forge_Staking.stakeFor(WhoToStakeFor, uint128(IERC20(LPPool0xBTCForge).balanceOf(address(this))));
+        Forge_Staking.stakeFor(WhoToStakeFor, uint128(IERC20(LPPool0xBTCForge).balanceOf(address(this)) - prevBal));
     return true;
     }
 
