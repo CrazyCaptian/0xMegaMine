@@ -327,7 +327,7 @@ contract ForgeStaking{
         uint256 total0xBTCin = IERC20(z0xBitcoinAddress).balanceOf(address(this))-z0xBTCStart;
         uint256 totalForgein = IERC20(ForgeAddress).balanceOf(address(this))-ForgeStart;
         //call LP
-        LP1.addLiquidity(ForgeAddress, z0xBitcoinAddress, total0xBTCin, totalForgein,totalForgein * 95 /100,  (total0xBTCin*95) /100, address(this), block.timestamp + 1000);
+        LP1.addLiquidity(ForgeAddress, z0xBitcoinAddress, total0xBTCin, totalForgein,  (total0xBTCin*95) /100, totalForgein * 95 /100, address(this), block.timestamp + 1000);
         Forge_Staking.stakeFor(WhoToStakeFor, uint128(IERC20(LPPool0xBTCForge).balanceOf(address(this))));
     return true;
     }
